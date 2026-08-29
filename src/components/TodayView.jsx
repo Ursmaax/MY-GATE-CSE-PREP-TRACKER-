@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Circle, Zap, ChevronLeft, ChevronRight, FileText, Clock, Sparkles, CloudRain, Sun, Cloud, Moon, MapPin, Wind, Droplets, Sunrise, Sunset, Flame, Play, Undo2 } from 'lucide-react';
+import { 
+  CheckCircle2, Circle, Zap, ChevronLeft, ChevronRight, FileText, Clock, 
+  Sparkles, CloudRain, Sun, Cloud, Moon, MapPin, Wind, Droplets, Sunrise, 
+  Sunset, Flame, Play, Undo2, Lock, Unlock, Calendar, BookOpen, BarChart2, 
+  Repeat, Settings, Search, Shield, RefreshCw, Check
+} from 'lucide-react';
 import { getDateFromDayNum, formatDateReadable } from '../utils/dateHelper';
 
-export default function TodayView({ scheduleData, settings, progress, setProgress, notes, setNotes, onStartFocus }) {
+export default function TodayView({ scheduleData, settings, setSettings, progress, setProgress, notes, setNotes, onStartFocus, setActiveTab }) {
   // 1. India Standard Time (IST) Clock & Real-time calculation
   const [istTime, setIstTime] = useState(() => {
     return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
@@ -24,24 +29,30 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const timeString = `${displayHours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-  // 2. Live Weather state for Srikakulam, AP
-  const [weather, setWeather] = useState({
-    temp: 29,
-    feelsLike: 36,
-    condition: 'Light Rain',
-    humidity: 87,
-    wind: 9,
-    sunrise: '05:37 AM',
-    sunset: '06:17 PM',
-    lastUpdated: 'Just now',
-    loading: false
+  // 2. Live Weather state for Srikakulam, AP with caching & offline resilience
+  const [weather, setWeather] = useState(() => {
+    const cached = localStorage.getItem('gate2028_weather_cache');
+    if (cached) {
+      try { return JSON.parse(cached); } catch(e) {}
+    }
+    return {
+      temp: 29,
+      feelsLike: 36,
+      condition: 'Light Rain',
+      humidity: 87,
+      wind: 9,
+      sunrise: '05:37 AM',
+      sunset: '06:17 PM',
+      lastUpdated: 'Cached',
+      isOffline: false
+    };
   });
 
   useEffect(() => {
-    // Fetch real weather from Open-Meteo for Srikakulam (approx 18.30°N, 83.90°E)
     async function fetchWeather() {
       try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.30&longitude=83.90&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=sunrise,sunset&timezone=Asia%2FKolkata');
+        if (!res.ok) throw new Error('Network error');
         const data = await res.json();
         if (data && data.current) {
           const code = data.current.weather_code;
@@ -51,7 +62,6 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
           else if (code === 0) cond = 'Clear Sky';
           else if (code >= 1 && code <= 3) cond = 'Cloudy';
 
-          // format sunrise & sunset
           let sunriseStr = '05:37 AM';
           let sunsetStr = '06:17 PM';
           if (data.daily && data.daily.sunrise && data.daily.sunset) {
@@ -61,7 +71,7 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
             sunsetStr = ss.toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
           }
 
-          setWeather({
+          const newW = {
             temp: Math.round(data.current.temperature_2m),
             feelsLike: Math.round(data.current.apparent_temperature || data.current.temperature_2m + 3),
             condition: cond,
@@ -70,46 +80,48 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
             sunrise: sunriseStr,
             sunset: sunsetStr,
             lastUpdated: 'Just now',
-            loading: false
-          });
+            isOffline: false
+          };
+          setWeather(newW);
+          localStorage.setItem('gate2028_weather_cache', JSON.stringify(newW));
         }
       } catch (err) {
-        console.error('Weather fetch fallback used', err);
+        setWeather(prev => ({ ...prev, lastUpdated: 'Last synced earlier (offline)', isOffline: true }));
       }
     }
     fetchWeather();
-    const weatherInterval = setInterval(fetchWeather, 30 * 60 * 1000); // every 30 mins
-    return () => clearInterval(weatherInterval);
+    const interval = setInterval(fetchWeather, 30 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  // 3. Time-aware Greetings & Original Dynamic Motivations
+  // 3. Time-aware Greetings, Weather Atmosphere & Dynamic Motivations
   let greeting = '';
   let motivationMsg = '';
   let WeatherIcon = CloudRain;
   let weatherGradient = 'from-blue-600 via-indigo-700 to-slate-900';
 
   if (hours >= 0 && hours < 5) {
-    greeting = '🌅 Brahmamuhurtha Awakening — The World is Asleep, Your Goal is Waiting';
+    greeting = 'Good morning. The world is quiet. This is your time.';
     motivationMsg = '“At 3 AM in Srikakulam, while silence rules the coast, your dedication builds your IIT dream. Open the first lecture. Do not think, just execute.”';
     WeatherIcon = Moon;
     weatherGradient = 'from-slate-950 via-indigo-950 to-blue-950';
   } else if (hours >= 5 && hours < 12) {
-    greeting = '☀️ Good Morning, Srikakulam Warrior';
+    greeting = 'Good morning ☀️';
     motivationMsg = '“Morning light over the Bay of Bengal. Your daily schedule is locked. Trust the plan, watch the lecture, master the concepts.”';
     WeatherIcon = Sun;
     weatherGradient = 'from-sky-500 via-indigo-600 to-blue-700';
   } else if (hours >= 12 && hours < 17) {
-    greeting = '⚡ Afternoon Execution Peak';
+    greeting = 'Good afternoon.';
     motivationMsg = '“Midday focus. Do not get distracted by alternative resources or changing teachers. Execute today’s tasks with absolute rigor.”';
     WeatherIcon = Cloud;
     weatherGradient = 'from-blue-600 via-sky-600 to-indigo-800';
   } else if (hours >= 17 && hours < 21) {
-    greeting = '🌆 Evening Revision & Problem Solving';
+    greeting = 'Good evening.';
     motivationMsg = '“As evening settles over Srikakulam, review your notes and solve practice sets. Consistency beats intensity every single time.”';
     WeatherIcon = CloudRain;
     weatherGradient = 'from-indigo-900 via-slate-900 to-blue-950';
   } else {
-    greeting = '🌙 Late Night Deep Focus';
+    greeting = 'Good night.';
     motivationMsg = '“Late night session. Wrap up pending tasks, record your progress, and prepare for tomorrow’s triumph.”';
     WeatherIcon = Moon;
     weatherGradient = 'from-slate-900 via-indigo-950 to-slate-950';
@@ -119,7 +131,6 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
   const startDateStr = settings.startDate || '2026-08-30';
   const start = new Date(startDateStr);
   
-  // Calculate difference in days between IST now and start date
   const istDateOnly = new Date(istTime.getFullYear(), istTime.getMonth(), istTime.getDate());
   const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
   const diffTime = istDateOnly - startDateOnly;
@@ -129,7 +140,6 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
     return Math.max(1, Math.min(189, calculatedDayNum));
   });
 
-  // If before start date (e.g. 29 Aug 2026)
   const isBeforeStart = calculatedDayNum < 1;
 
   const currentWeekNum = Math.ceil(Math.max(1, selectedDayNum) / 7);
@@ -137,14 +147,11 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
   const dayData = weekData ? weekData.days.find(d => d.dayNum === selectedDayNum) : null;
   const actualDate = getDateFromDayNum(selectedDayNum, startDateStr);
 
-  // 5. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED
-  // A day counts when all required tasks for that day are completed (or >= 80%)
+  // 5. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80% or 100%)
   const calculateRealStudyStreak = () => {
     let streak = 0;
-    // check backwards from today or current day
     const checkDayLimit = Math.min(selectedDayNum, calculatedDayNum);
     for (let d = checkDayLimit; d >= 1; d--) {
-      // Find day tasks
       let dayTotalTasks = 0;
       let dayCompletedTasks = 0;
       scheduleData.forEach(w => {
@@ -162,15 +169,12 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
         });
       });
 
-      // Day is completed if dayTotalTasks > 0 and completed == totalTasks (or >= 80%)
       const isCompleted = dayTotalTasks > 0 && (dayCompletedTasks / dayTotalTasks) >= 0.8;
       if (isCompleted) {
         streak++;
       } else if (d === calculatedDayNum) {
-        // Today in progress doesn't break historical streak yet
         continue;
       } else {
-        // Streak broken on past uncompleted day
         break;
       }
     }
@@ -180,7 +184,7 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
   const currentStudyStreak = calculateRealStudyStreak();
 
   // Task check toggle with undo capability toast/state
-  const [lastToggled, setLastToggled] = useState(null); // { key, prevValue }
+  const [lastToggled, setLastToggled] = useState(null);
 
   const toggleTask = (subIdx, taskName) => {
     const key = `${selectedDayNum}_${subIdx}_${taskName}`;
@@ -203,7 +207,6 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
     setNotes({ ...notes, [key]: text });
   };
 
-  // Today progress
   let totalTasks = 0;
   let completedTasks = 0;
 
@@ -223,22 +226,25 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
 
   // Find "What To Do Now" (first incomplete task)
   let currentTaskObj = null;
+  let nextTaskObj = null;
   if (dayData && dayData.subjects) {
-    for (let sIdx = 0; sIdx < dayData.subjects.length; sIdx++) {
-      const sub = dayData.subjects[sIdx];
-      for (let tIdx = 0; tIdx < sub.tasks.length; tIdx++) {
-        const task = sub.tasks[tIdx];
+    let foundCurrent = false;
+    dayData.subjects.forEach((sub, sIdx) => {
+      sub.tasks.forEach((task, tIdx) => {
         const key = `${selectedDayNum}_${sIdx}_${task}`;
         if (!progress[key]) {
-          currentTaskObj = { subject: sub.name, lecture: sub.lecture, module: sub.module, duration: sub.duration, taskName: task, sIdx };
-          break;
+          if (!foundCurrent) {
+            currentTaskObj = { subject: sub.name, lecture: sub.lecture, module: sub.module, duration: sub.duration, taskName: task, sIdx };
+            foundCurrent = true;
+          } else if (!nextTaskObj) {
+            nextTaskObj = { lecture: sub.lecture, taskName: task };
+          }
         }
-      }
-      if (currentTaskObj) break;
-    }
+      });
+    });
   }
 
-  // If before start date, show countdown
+  // If before start date
   if (isBeforeStart) {
     const diffMs = start - istTime;
     const hoursLeft = Math.floor(diffMs / (1000 * 60 * 60));
@@ -288,7 +294,6 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
 
       {/* Ultra Premium Live Srikakulam Weather & Clock Header Banner */}
       <div className={`bg-gradient-to-r ${weatherGradient} rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-sky-500/10 relative overflow-hidden border border-white/10 transition-all duration-700`}>
-        {/* Ambient background glows */}
         <div className="absolute -right-10 -top-10 w-48 h-48 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -329,13 +334,30 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
             </div>
           </div>
 
-          <button
-            onClick={onStartFocus}
-            className="bg-white hover:bg-sky-50 text-sky-950 px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl shadow-black/20 flex items-center space-x-2 transition-all transform hover:scale-105 active:scale-95 shrink-0"
-          >
-            <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-            <span>START FOCUS MODE</span>
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2.5 w-full md:w-auto">
+            <button
+              onClick={() => {
+                const newLock = !settings.lockToday;
+                setSettings({ ...settings, lockToday: newLock });
+              }}
+              className={`px-4 py-3.5 rounded-2xl font-black text-xs flex items-center justify-center space-x-2 transition-all ${
+                settings.lockToday
+                  ? 'bg-rose-600 text-white shadow-lg'
+                  : 'bg-white/15 hover:bg-white/25 text-white backdrop-blur-md'
+              }`}
+            >
+              {settings.lockToday ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+              <span>{settings.lockToday ? 'TODAY LOCKED' : 'LOCK TODAY'}</span>
+            </button>
+
+            <button
+              onClick={onStartFocus}
+              className="bg-white hover:bg-sky-50 text-sky-950 px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl shadow-black/20 flex items-center justify-center space-x-2 transition-all transform hover:scale-105 active:scale-95"
+            >
+              <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <span>START FOCUS MODE</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -397,7 +419,7 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
         </button>
       </div>
 
-      {/* WHAT SHOULD I DO RIGHT NOW? (Decision Fatigue Eliminator Card) */}
+      {/* WHAT SHOULD I DO NOW? (Decision Fatigue Eliminator Card) */}
       {currentTaskObj ? (
         <div className="bg-gradient-to-r from-sky-600 to-indigo-600 rounded-3xl p-6 sm:p-7 text-white shadow-xl shadow-sky-500/15 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="space-y-1">
@@ -407,12 +429,12 @@ export default function TodayView({ scheduleData, settings, progress, setProgres
             <p className="text-xs text-sky-100 font-bold mt-2">{currentTaskObj.subject} • {currentTaskObj.module}</p>
             <h3 className="text-xl sm:text-2xl font-black">{currentTaskObj.lecture}</h3>
             <p className="text-xs text-sky-200">Current Task: <span className="font-bold underline">{currentTaskObj.taskName}</span></p>
+            {nextTaskObj && (
+              <p className="text-[11px] text-sky-200/80 mt-1">Next up: {nextTaskObj.lecture} ({nextTaskObj.taskName})</p>
+            )}
           </div>
           <button
-            onClick={() => {
-              // auto toggle this first task
-              toggleTask(currentTaskObj.sIdx, currentTaskObj.taskName);
-            }}
+            onClick={() => toggleTask(currentTaskObj.sIdx, currentTaskObj.taskName)}
             className="bg-white text-sky-600 hover:bg-sky-50 px-5 py-3 rounded-2xl font-black text-xs shadow-lg flex items-center space-x-2 transition-all transform hover:scale-105 shrink-0"
           >
             <Play className="w-4 h-4 fill-sky-600" />
