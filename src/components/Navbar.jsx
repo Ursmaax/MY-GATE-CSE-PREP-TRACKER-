@@ -41,7 +41,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
             </div>
           </div>
 
-          {/* Desktop Nav - Compact Icon-First Layout with tiny labels to fit 100% scale */}
+          {/* Desktop Nav - Gorgeous glowing hover effects */}
           <nav className="hidden lg:flex items-center space-x-1 bg-white/5 dark:bg-black/30 p-1 rounded-2xl border border-white/15 backdrop-blur-md">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -51,13 +51,13 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   title={item.label}
-                  className={`flex items-center space-x-1 px-2.5 py-2 rounded-xl text-[11px] font-extrabold transition-all duration-300 whitespace-nowrap ${
+                  className={`flex items-center space-x-1 px-2.5 py-2 rounded-xl text-[11px] font-extrabold transition-all duration-300 whitespace-nowrap relative group/btn ${
                     active
-                      ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] scale-105 border border-pink-400/30'
-                      : 'text-pink-100/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(236,72,153,0.6)] scale-105 border border-pink-400/40'
+                      : 'text-pink-100/70 hover:text-white hover:bg-gradient-to-r hover:from-pink-500/25 hover:to-purple-500/25 hover:shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:border-pink-500/30 border border-transparent'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 shrink-0" />
+                  <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-300 group-hover/btn:scale-110 ${active ? 'text-white animate-pulse' : 'text-pink-300 group-hover/btn:text-pink-200'}`} />
                   <span className="hidden xl:inline">{item.label}</span>
                 </button>
               );
@@ -68,14 +68,14 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
           <div className="flex items-center space-x-2 shrink-0">
             <button
               onClick={onOpenSearch}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-pink-200/80 hover:text-white border border-white/10 transition-colors shadow-sm"
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200/80 hover:text-white border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all shadow-sm"
               title="Global Search"
             >
               <Search className="w-4 h-4" />
             </button>
             <button
               onClick={onToggleFocus}
-              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/35 hover:to-orange-500/35 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border border-amber-500/30 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]"
               title="Focus Mode"
             >
               <Zap className="w-4 h-4 text-amber-400 fill-amber-400 animate-bounce shrink-0" />
@@ -83,7 +83,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-pink-200 border border-white/10 transition-colors text-sm"
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200 border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all text-sm"
               title="Toggle Theme"
             >
               {darkMode ? '🌙' : '☀️'}
