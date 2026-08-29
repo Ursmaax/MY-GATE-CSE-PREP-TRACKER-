@@ -40,12 +40,12 @@ export default function RevisionView() {
   const items = Object.values(revisions);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3 py-1 rounded-full">
+    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 animate-fadeIn">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors">
+        <span className="text-xs font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800">
           SPACED REVISION
         </span>
-        <h2 className="text-2xl font-extrabold mt-2 tracking-tight">Revision & Spaced Repetition System</h2>
+        <h2 className="text-2xl sm:text-3xl font-black mt-2 tracking-tight">Revision & Spaced Repetition System</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Keep core concepts fresh in your memory with scheduled revision tasks.
         </p>
@@ -57,12 +57,12 @@ export default function RevisionView() {
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Topic to revise (e.g. AVL Tree rotations)"
-            className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100"
           />
           <select
             value={newSubject}
             onChange={(e) => setNewSubject(e.target.value)}
-            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100"
           >
             <option value="Data Structures">Data Structures</option>
             <option value="Algorithms">Algorithms</option>
@@ -73,7 +73,7 @@ export default function RevisionView() {
           </select>
           <button
             type="submit"
-            className="bg-sky-500 hover:bg-sky-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md flex items-center justify-center space-x-1.5 transition-colors"
+            className="bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl text-sm shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 transition-all transform hover:scale-105"
           >
             <Plus className="w-4 h-4" />
             <span>Add Revision</span>
@@ -87,11 +87,11 @@ export default function RevisionView() {
           items.map(item => (
             <div
               key={item.id}
-              className={`bg-white dark:bg-slate-900 rounded-2xl p-4 border shadow-sm flex items-center justify-between transition-all ${
-                item.completed ? 'border-emerald-300 dark:border-emerald-800 opacity-75' : 'border-slate-200 dark:border-slate-800'
+              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border shadow-sm flex items-center justify-between transition-all duration-300 ${
+                item.completed ? 'border-emerald-300 dark:border-emerald-800 opacity-75' : 'border-slate-200/80 dark:border-slate-800 hover:border-sky-300'
               }`}
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-4">
                 <button onClick={() => toggleRevision(item.id)}>
                   {item.completed ? (
                     <CheckCircle2 className="w-6 h-6 text-emerald-500" />
@@ -100,15 +100,15 @@ export default function RevisionView() {
                   )}
                 </button>
                 <div>
-                  <h4 className={`font-bold text-base ${item.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100'}`}>
+                  <h4 className={`font-extrabold text-base ${item.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'}`}>
                     {item.title}
                   </h4>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <span className="text-[10px] font-bold uppercase bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 px-2 py-0.5 rounded">
+                  <div className="flex items-center space-x-2.5 mt-1.5">
+                    <span className="text-[10px] font-black uppercase bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 px-2.5 py-0.5 rounded border border-sky-200 dark:border-sky-800">
                       {item.subject}
                     </span>
-                    <span className="text-xs text-slate-400 flex items-center space-x-1">
-                      <Calendar className="w-3 h-3" />
+                    <span className="text-xs text-slate-400 font-medium flex items-center space-x-1">
+                      <Calendar className="w-3.5 h-3.5" />
                       <span>Due: {item.dueDate}</span>
                     </span>
                   </div>
@@ -117,15 +117,15 @@ export default function RevisionView() {
 
               <button
                 onClick={() => deleteRevision(item.id)}
-                className="text-xs text-rose-500 hover:underline px-3 py-1.5 font-semibold"
+                className="text-xs text-rose-500 hover:underline px-3 py-1.5 font-bold"
               >
                 Delete
               </button>
             </div>
           ))
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-200 dark:border-slate-800">
-            <p className="text-slate-500 text-sm">No revision items added yet. Add topics above for spaced repetition.</p>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <p className="text-slate-500 text-sm font-bold">No revision items added yet. Add topics above for spaced repetition.</p>
           </div>
         )}
       </div>

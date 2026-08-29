@@ -1,5 +1,5 @@
-import React from 'react';
-import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggleFocus, darkMode, setDarkMode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -15,19 +15,22 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800">
+    <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('today')}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 font-bold text-xl">
+          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('today')}>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/25 font-bold text-xl group-hover:scale-105 transition-transform duration-300">
               ⚡
             </div>
             <div>
-              <h1 className="font-bold text-base sm:text-lg tracking-tight bg-gradient-to-r from-sky-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              <h1 className="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 dark:from-sky-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent flex items-center gap-1.5">
                 GATE 2028 COMMAND
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  ULTRA
+                </span>
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Just Execute the Plan</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Srikakulam Command Center • Just Execute</p>
             </div>
           </div>
 
@@ -40,10 +43,10 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
                     active
-                      ? 'bg-sky-500 text-white shadow-sm shadow-sky-500/30'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/25 scale-[1.02]'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -57,30 +60,31 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
           <div className="flex items-center space-x-2">
             <button
               onClick={onOpenSearch}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Global Search"
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-4.5 h-4.5" />
             </button>
             <button
               onClick={onToggleFocus}
-              className="hidden sm:flex items-center space-x-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 px-3 py-2 rounded-lg text-xs font-semibold transition-colors border border-amber-500/20"
+              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all duration-300 border border-amber-500/20 shadow-sm"
               title="Focus Mode"
             >
-              <Zap className="w-4 h-4" />
-              <span>Focus</span>
+              <Zap className="w-4 h-4 text-amber-500 fill-amber-500 animate-bounce" />
+              <span>Focus Mode</span>
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-base"
+              title="Toggle Theme"
             >
               {darkMode ? '☀️' : '🌙'}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="lg:hidden p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -88,7 +92,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-1">
+        <div className="lg:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-1.5 animate-fadeIn">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = activeTab === item.id;
@@ -99,9 +103,9 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                   setActiveTab(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                   active
-                    ? 'bg-sky-500 text-white'
+                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-md'
                     : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
@@ -115,9 +119,9 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
               onToggleFocus();
               setMobileMenuOpen(false);
             }}
-            className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400"
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
           >
-            <Zap className="w-5 h-5" />
+            <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
             <span>Start Focus Mode</span>
           </button>
         </div>
