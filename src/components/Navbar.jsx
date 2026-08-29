@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles } from 'lucide-react';
+import React from 'react';
+import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles, Award, FileSpreadsheet } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggleFocus, darkMode, setDarkMode }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const navItems = [
     { id: 'today', label: 'Today', icon: CheckSquare },
@@ -10,6 +10,8 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
     { id: 'weeks', label: '27 Weeks', icon: BookOpen },
     { id: 'subjects', label: 'Subjects', icon: Shield },
     { id: 'progress', label: 'Progress', icon: BarChart2 },
+    { id: 'quizzes', label: 'Quizzes', icon: Award },
+    { id: 'tests', label: 'Tests', icon: FileSpreadsheet },
     { id: 'revision', label: 'Revision', icon: Repeat },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
@@ -43,13 +45,13 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
                     active
-                      ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/25 scale-[1.02]'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400'
+                      ? 'bg-gradient-to-r from-pink-600 to-indigo-600 text-white shadow-lg shadow-pink-500/25 scale-[1.02]'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-pink-600 dark:hover:text-pink-400'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5" />
                   <span>{item.label}</span>
                 </button>
               );
@@ -105,7 +107,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                   active
-                    ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-md'
+                    ? 'bg-gradient-to-r from-pink-600 to-indigo-600 text-white shadow-md'
                     : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >

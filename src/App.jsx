@@ -5,12 +5,14 @@ import PlanView from './components/PlanView';
 import WeeksView from './components/WeeksView';
 import SubjectsView from './components/SubjectsView';
 import ProgressView from './components/ProgressView';
+import QuizzesView from './components/QuizzesView';
+import TestsView from './components/TestsView';
 import RevisionView from './components/RevisionView';
 import SettingsView from './components/SettingsView';
 import FocusMode from './components/FocusMode';
 import SearchModal from './components/SearchModal';
 import { initialScheduleData } from './data/scheduleData';
-import { loadSettings, saveSettings, loadProgress, saveProgress, loadNotes, saveNotes } from './utils/storage';
+import { loadSettings, saveSettings, loadProgress, saveProgress, loadNotes, saveNotes, loadRevisions, loadQuizzes, loadTests } from './utils/storage';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('today');
@@ -21,7 +23,6 @@ export default function App() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(settings.darkMode);
 
-  // Sync settings & progress to localStorage
   useEffect(() => {
     saveSettings({ ...settings, darkMode });
   }, [settings, darkMode]);
@@ -34,7 +35,6 @@ export default function App() {
     saveNotes(notes);
   }, [notes]);
 
-  // Apply dark class to document body
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -44,7 +44,7 @@ export default function App() {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-pink-500 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -61,11 +61,13 @@ export default function App() {
           <TodayView
             scheduleData={initialScheduleData}
             settings={settings}
+            setSettings={setSettings}
             progress={progress}
             setProgress={setProgress}
             notes={notes}
             setNotes={setNotes}
             onStartFocus={() => setFocusModeOpen(true)}
+            setActiveTab={setActiveTab}
           />
         )}
         {activeTab === 'plan' && (
@@ -95,6 +97,12 @@ export default function App() {
             progress={progress}
             settings={settings}
           />
+        )}
+        {activeTab === 'quizzes' && (
+          <QuizzesView />
+        )}
+        {activeTab === 'tests' && (
+          <TestsView />
         )}
         {activeTab === 'revision' && (
           <RevisionView />
