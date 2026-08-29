@@ -2,6 +2,7 @@
 ### *Maahi 💗 Edition — Just Execute.*
 
 [![Live Demo](https://img.shields.io/badge/Status-Live%20&%20Ready-pink?style=for-the-badge&logo=rocket)](https://ursmaax.github.io/MY-GATE-CSE-PREP-TRACKER-/)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ursmaax/MY-GATE-CSE-PREP-TRACKER-)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![GATE CSE 2028](https://img.shields.io/badge/Target-GATE%20CSE%202028-indigo?style=for-the-badge)](https://github.com/Ursmaax/MY-GATE-CSE-PREP-TRACKER-)
 [![Built with React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite%20%2B%20Tailwind-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -58,18 +59,29 @@ npm run dev
 
 ---
 
-## 📦 Deployment (GitHub Pages & Netlify)
+## 📦 Deployment (Netlify & GitHub Pages)
 
 This project is fully prepared for lifelong free deployment:
 
-### Deploy to GitHub Pages:
-```bash
-npm run build
-# Publish dist folder to gh-pages branch
-```
+### 🚀 Deploy Instantly to Netlify (Recommended)
+Click the button below to deploy your own instance of the Dreamland Command Center to Netlify for free in 30 seconds:
 
-### Deploy to Netlify:
-Drag and drop your `dist/` folder or link your repository to Netlify for continuous auto-deployments.
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ursmaax/MY-GATE-CSE-PREP-TRACKER-)
+
+**Manual Netlify Setup:**
+1. Log in to [Netlify](https://app.netlify.com/).
+2. Click **Add new site** ➔ **Import an existing project**.
+3. Select your repository: `Ursmaax/MY-GATE-CSE-PREP-TRACKER-`.
+4. Build settings:
+   - **Build command:** `npm run build`
+   - **Publish directory:** `dist`
+5. Click **Deploy Site**!
+
+### 🌐 Deploy to GitHub Pages:
+```bash
+npm run deploy
+```
+Your app will be live at: `https://ursmaax.github.io/MY-GATE-CSE-PREP-TRACKER-/`
 
 ---
 
