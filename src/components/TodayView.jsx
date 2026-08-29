@@ -99,7 +99,6 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   let greeting = '';
   let motivationMsg = '';
   let WeatherIcon = Moon;
-  let atmosphereBg = 'bg-[#060913] text-slate-100 border-white/10';
   let heroGradient = 'from-slate-950 via-[#0B1021] to-[#121936]';
   let accentGlow = 'bg-sky-500/10';
 
@@ -140,7 +139,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     accentGlow = 'bg-indigo-500/10';
   }
 
-  // 4. Start Date & Day Calculation in IST
+  // 4. Start Date & Day Calculation in IST (Force start date to 30 Aug 2026 or allow live today)
   const startDateStr = settings.startDate || '2026-08-30';
   const start = new Date(startDateStr);
   
@@ -150,10 +149,9 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   const calculatedDayNum = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
   const [selectedDayNum, setSelectedDayNum] = useState(() => {
+    // If today is before start date in real calendar, default to day 1 so user sees the schedule immediately instead of countdown
     return Math.max(1, Math.min(189, calculatedDayNum));
   });
-
-  const isBeforeStart = calculatedDayNum < 1;
 
   const currentWeekNum = Math.ceil(Math.max(1, selectedDayNum) / 7);
   const weekData = scheduleData.find(w => w.weekNumber === currentWeekNum) || scheduleData[0];
@@ -163,7 +161,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   // 5. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80%)
   const calculateRealStudyStreak = () => {
     let streak = 0;
-    const checkDayLimit = Math.min(selectedDayNum, calculatedDayNum);
+    const checkDayLimit = Math.min(selectedDayNum, Math.max(1, calculatedDayNum));
     for (let d = checkDayLimit; d >= 1; d--) {
       let dayTotalTasks = 0;
       let dayCompletedTasks = 0;
@@ -191,7 +189,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         break;
       }
     }
-    return streak;
+    return Math.max(streak, 1);
   };
 
   const currentStudyStreak = calculateRealStudyStreak();
@@ -216,7 +214,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   };
 
   const handleNoteChange = (subIdx, text) => {
-    const key = `${selectedDayNum}_${sIdx}_note`;
+    const key = `${selectedDayNum}_${subIdx}_note`;
     setNotes({ ...notes, [key]: text });
   };
 
@@ -255,38 +253,6 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         }
       });
     });
-  }
-
-  // If before start date
-  if (isBeforeStart) {
-    const diffMs = start - istTime;
-    const hoursLeft = Math.floor(diffMs / (1000 * 60 * 60));
-    const minsLeft = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    const secsLeft = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center space-y-8 animate-fadeIn">
-        <div className="w-20 h-20 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-2xl shadow-sky-500/30">
-          ⚡
-        </div>
-        <div className="space-y-3">
-          <span className="text-xs font-black uppercase tracking-widest bg-sky-500/10 text-sky-600 dark:text-sky-400 px-4 py-1.5 rounded-full border border-sky-500/25">
-            GATE 2028 COMMAND CENTER
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight">Preparation Begins Soon</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-lg mx-auto">
-            Your official 27-week foundational schedule starts on <span className="font-bold text-slate-800 dark:text-slate-200">30 August 2026</span>.
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl max-w-md mx-auto">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Starts In</p>
-          <div className="text-3xl sm:text-4xl font-black font-mono mt-2 text-sky-600 dark:text-sky-400">
-            {hoursLeft.toString().padStart(2, '0')}:{minsLeft.toString().padStart(2, '0')}:{secsLeft.toString().padStart(2, '0')}
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (
