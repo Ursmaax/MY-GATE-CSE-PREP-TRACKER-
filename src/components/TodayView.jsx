@@ -108,48 +108,48 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     fetchLiveLocationAndWeather();
   }, []);
 
-  // 3. Immersive Dreamland Atmospheric Themes (Deep Magical Pink/Purple & Starry Cosmos)
+  // 3. Immersive Liquid Glass Dreamland Atmosphere
   let environmentName = 'Starlight Dream';
   let greeting = '';
   let motivationMsg = '';
   let WeatherIcon = Moon;
-  let heroGradient = 'from-[#12071f] via-[#1f0d3d] to-[#0d0922]';
+  let heroGradient = 'from-[#12071f]/90 via-[#1f0d3d]/90 to-[#0d0922]/90';
   let accentGlow = 'bg-pink-500/20';
 
   if (hours >= 0 && hours < 5) {
     environmentName = 'Brahmamuhurtha Dream';
-    greeting = 'Good morning. The starlight whispers your IIT dream.';
+    greeting = 'Good morning. The world is quiet. This is your time.';
     motivationMsg = '“At 3 AM, while the universe rests, your dedication builds your destiny, Maahi 💗.”';
     WeatherIcon = Moon;
-    heroGradient = 'from-[#0a0314] via-[#16082b] to-[#0c051a]';
+    heroGradient = 'from-[#0a0314]/95 via-[#16082b]/95 to-[#0c051a]/95';
     accentGlow = 'bg-purple-500/25';
   } else if (hours >= 5 && hours < 8) {
     environmentName = 'Magical Dawn';
-    greeting = 'Good morning. First pink light over the horizon.';
-    motivationMsg = '“The path is clear. The schedule is locked. Execute today’s plan with absolute grace.”';
+    greeting = 'Good morning. First light over the garden.';
+    motivationMsg = '“The path is clear. The schedule is locked. Execute today’s plan with absolute calm.”';
     WeatherIcon = Sunrise;
-    heroGradient = 'from-[#140824] via-[#24103f] to-[#12082b]';
+    heroGradient = 'from-[#140824]/90 via-[#24103f]/90 to-[#12082b]/90';
     accentGlow = 'bg-rose-500/20';
   } else if (hours >= 8 && hours < 17) {
     environmentName = 'Radiant Daylight';
     greeting = hours < 12 ? 'Good morning ☀️' : 'Good afternoon.';
     motivationMsg = '“One lecture at a time. No subject switching. Trust the coaching schedule, Maahi 💗.”';
     WeatherIcon = Sun;
-    heroGradient = 'from-[#100c24] via-[#1c123d] to-[#0f172a]';
+    heroGradient = 'from-[#100c24]/90 via-[#1c123d]/90 to-[#0f172a]/90';
     accentGlow = 'bg-pink-500/20';
   } else if (hours >= 17 && hours < 20) {
     environmentName = 'Twilight Dusk';
     greeting = 'Good evening.';
     motivationMsg = '“As twilight settles, review your notes and lock in your practice sets with confidence.”';
     WeatherIcon = Sunset;
-    heroGradient = 'from-[#1f092b] via-[#33114a] to-[#140826]';
+    heroGradient = 'from-[#1f092b]/90 via-[#33114a]/90 to-[#140826]/90';
     accentGlow = 'bg-pink-500/25';
   } else {
     environmentName = 'Deep Dreamland Cosmos';
     greeting = 'Good night.';
     motivationMsg = '“Today’s work is done. Sleep peacefully knowing you moved closer to GATE 2028, Maahi 💗.”';
     WeatherIcon = Moon;
-    heroGradient = 'from-[#080312] via-[#130724] to-[#0b0417]';
+    heroGradient = 'from-[#080312]/95 via-[#130724]/95 to-[#0b0417]/95';
     accentGlow = 'bg-indigo-500/25';
   }
 
@@ -269,10 +269,18 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans relative">
+      {/* Floating Magic Blossoms Background Atmosphere */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-12 left-10 w-2.5 h-2.5 bg-pink-400/40 rounded-full blur-[1px] animate-pulse" />
+        <div className="absolute top-48 right-16 w-3.5 h-3.5 bg-rose-400/30 rounded-full blur-[1px] animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-32 left-1/4 w-3 h-3 bg-purple-400/30 rounded-full blur-[1px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 right-1/3 w-2.5 h-2.5 bg-pink-300/40 rounded-full blur-[1px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+      </div>
+
       {/* Undo Toast Notification */}
       {lastToggled && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#150a26] text-pink-200 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3.5 border border-pink-500/30 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#150a26]/95 backdrop-blur-xl text-pink-200 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3.5 border border-pink-500/30 animate-bounce">
           <span className="text-xs font-bold">Task updated</span>
           <button
             onClick={undoLastToggle}
@@ -284,11 +292,11 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         </div>
       )}
 
-      {/* DREAMLAND CINEMATIC HERO COMPOSITION */}
-      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-[0_10px_50px_rgba(236,72,153,0.15)] relative overflow-hidden border border-pink-500/20 transition-all duration-1000`}>
+      {/* LIQUID GLASS CINEMATIC HERO COMPOSITION */}
+      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-[0_20px_60px_rgba(18,7,31,0.6)] relative overflow-hidden border border-pink-500/20 backdrop-blur-2xl transition-all duration-1000 z-10`}>
         {/* Ambient atmospheric glowing starlight */}
-        <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[120px] pointer-events-none`} />
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[130px] pointer-events-none`} />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Hero: Time, Environment & Greeting */}
@@ -310,7 +318,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
             <div className="space-y-2">
               <div className="flex items-baseline space-x-3">
-                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-[0_2px_15px_rgba(236,72,153,0.4)]">
+                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-[0_2px_20px_rgba(236,72,153,0.4)]">
                   {timeString}
                 </h1>
                 <span className="text-xs font-black text-pink-300 uppercase tracking-widest bg-white/10 px-2.5 py-1 rounded-lg border border-pink-500/20">
@@ -351,7 +359,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             </div>
           </div>
 
-          {/* Right Hero: Dreamland Weather Card & Core Stats */}
+          {/* Right Hero: Liquid Glass Weather Card & Core Stats */}
           <div className="lg:col-span-5 bg-white/5 backdrop-blur-2xl rounded-3xl p-6 border border-pink-500/20 shadow-2xl space-y-5">
             <div className="flex justify-between items-center border-b border-pink-500/20 pb-4">
               <div>
@@ -412,7 +420,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
       </div>
 
       {/* Date Navigator Header */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-pink-500/20 shadow-sm flex items-center justify-between transition-colors">
+      <div className="bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl p-5 border border-pink-500/20 shadow-sm flex items-center justify-between transition-colors z-10 relative">
         <button
           onClick={() => setSelectedDayNum(prev => Math.max(1, prev - 1))}
           className="flex items-center space-x-1.5 text-xs font-bold px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
@@ -439,7 +447,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
       {/* WHAT SHOULD I DO NOW? (Decision Fatigue Eliminator Card) */}
       {currentTaskObj ? (
-        <div className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-pink-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10">
+        <div className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-pink-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10 z-10 relative">
           <div className="space-y-2">
             <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-white/25">
               WHAT TO DO NOW • NO DECISION NEEDED
@@ -460,14 +468,14 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           </button>
         </div>
       ) : (
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-8 text-white shadow-2xl text-center space-y-3">
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-8 text-white shadow-2xl text-center space-y-3 z-10 relative">
           <h3 className="text-3xl font-black">DAY COMPLETE ✅</h3>
           <p className="text-xs sm:text-sm text-emerald-100 font-medium">All planned academic work for Day {selectedDayNum} is successfully executed, Maahi 💗. Your study streak is secure.</p>
         </div>
       )}
 
       {/* Today's Tasks Cards */}
-      <div className="space-y-5">
+      <div className="space-y-5 z-10 relative">
         <div className="flex items-center justify-between px-2">
           <h4 className="text-sm font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Today's Executable Plan</h4>
           <span className="text-xs font-black text-pink-600 dark:text-pink-400">{completedTasks} / {totalTasks} Complete</span>
@@ -481,7 +489,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             return (
               <div
                 key={sIdx}
-                className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-pink-500/15 dark:border-pink-500/10 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md"
+                className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-6 sm:p-8 border border-pink-500/15 dark:border-pink-500/10 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
                   <div>
@@ -553,7 +561,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             );
           })
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
+          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
             <h4 className="text-lg font-black text-slate-700 dark:text-slate-300">No Scheduled Lectures Today</h4>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
               Reset day or buffer day. Use this time to revise previous concepts or solve GATE PYQs!
