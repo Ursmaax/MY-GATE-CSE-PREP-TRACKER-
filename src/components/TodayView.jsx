@@ -29,69 +29,86 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const timeString = `${displayHours}:${minutes.toString().padStart(2, '0')}`;
 
-  // 2. Live Weather state for Srikakulam, AP with caching & offline resilience
-  const [weather, setWeather] = useState(() => {
-    const cached = localStorage.getItem('gate2028_weather_cache');
-    if (cached) {
-      try { return JSON.parse(cached); } catch(e) {}
-    }
-    return {
-      temp: 29,
-      feelsLike: 36,
-      condition: 'Light Rain',
-      humidity: 87,
-      wind: 9,
-      sunrise: '05:37 AM',
-      sunset: '06:17 PM',
-      lastUpdated: 'Cached',
-      isOffline: false
-    };
+  // 2. LIVE GEOLOCATION WEATHER DETECTION
+  const [locationName, setLocationName] = useState('Detecting Location...');
+  const [weather, setWeather] = useState({
+    temp: 29,
+    feelsLike: 35,
+    condition: 'Pleasant',
+    humidity: 75,
+    wind: 10,
+    sunrise: '05:40 AM',
+    sunset: '06:15 PM',
+    lastUpdated: 'Live',
+    isOffline: false
   });
 
   useEffect(() => {
-    async function fetchWeather() {
+    async function fetchLiveLocationAndWeather() {
       try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.30&longitude=83.90&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=sunrise,sunset&timezone=Asia%2FKolkata');
-        if (!res.ok) throw new Error('Network error');
-        const data = await res.json();
-        if (data && data.current) {
-          const code = data.current.weather_code;
+        // Step 1: Get IP Geolocation
+        const geoRes = await fetch('https://ipapi.co/json/');
+        if (!geoRes.ok) throw new Error('IP geolocation failed');
+        const geoData = await geoRes.json();
+        
+        const lat = geoData.latitude || 17.3850; // default Hyderabad/India if fallback
+        const lon = geoData.longitude || 78.4867;
+        const cityName = geoData.city || 'Your Location';
+        const regionName = geoData.region || '';
+        setLocationName(`${cityName}, ${regionName}`);
+
+        // Step 2: Fetch Live Weather for detected lat/lon from Open-Meteo
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=sunrise,sunset&timezone=Asia%2FKolkata`);
+        if (!weatherRes.ok) throw new Error('Weather fetch failed');
+        const wData = await weatherRes.json();
+
+        if (wData && wData.current) {
+          const code = wData.current.weather_code;
           let cond = 'Partly Cloudy';
           if (code >= 51 && code <= 67) cond = 'Light Rain';
           else if (code >= 71 && code <= 82) cond = 'Showers';
           else if (code === 0) cond = 'Clear Sky';
           else if (code >= 1 && code <= 3) cond = 'Cloudy';
 
-          let sunriseStr = '05:37 AM';
-          let sunsetStr = '06:17 PM';
-          if (data.daily && data.daily.sunrise && data.daily.sunset) {
-            const sr = new Date(data.daily.sunrise[0]);
-            const ss = new Date(data.daily.sunset[0]);
+          let sunriseStr = '05:40 AM';
+          let sunsetStr = '06:15 PM';
+          if (wData.daily && wData.daily.sunrise && wData.daily.sunset) {
+            const sr = new Date(wData.daily.sunrise[0]);
+            const ss = new Date(wData.daily.sunset[0]);
             sunriseStr = sr.toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
             sunsetStr = ss.toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
           }
 
-          const newW = {
-            temp: Math.round(data.current.temperature_2m),
-            feelsLike: Math.round(data.current.apparent_temperature || data.current.temperature_2m + 3),
+          const liveW = {
+            temp: Math.round(wData.current.temperature_2m),
+            feelsLike: Math.round(wData.current.apparent_temperature || wData.current.temperature_2m + 2),
             condition: cond,
-            humidity: data.current.relative_humidity_2m,
-            wind: Math.round(data.current.wind_speed_10m),
+            humidity: wData.current.relative_humidity_2m,
+            wind: Math.round(wData.current.wind_speed_10m),
             sunrise: sunriseStr,
             sunset: sunsetStr,
-            lastUpdated: 'Just now',
+            lastUpdated: 'Live GPS/IP',
             isOffline: false
           };
-          setWeather(newW);
-          localStorage.setItem('gate2028_weather_cache', JSON.stringify(newW));
+          setWeather(liveW);
+          localStorage.setItem('gate2028_live_weather_cache', JSON.stringify({ liveW, locationName: `${cityName}, ${regionName}` }));
         }
       } catch (err) {
-        setWeather(prev => ({ ...prev, lastUpdated: 'Last synced earlier', isOffline: true }));
+        // Fallback to cached or default
+        const cached = localStorage.getItem('gate2028_live_weather_cache');
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            setWeather(parsed.liveW);
+            setLocationName(parsed.locationName);
+          } catch(e) {}
+        } else {
+          setLocationName('India (IST)');
+        }
       }
     }
-    fetchWeather();
-    const interval = setInterval(fetchWeather, 30 * 60 * 1000);
-    return () => clearInterval(interval);
+
+    fetchLiveLocationAndWeather();
   }, []);
 
   // 3. Immersive Cinematic Atmospheric Themes based on IST Time & Weather
@@ -105,13 +122,13 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   if (hours >= 0 && hours < 5) {
     environmentName = 'Brahmamuhurtha Calm';
     greeting = 'Good morning. The world is quiet. This is your time.';
-    motivationMsg = '“At 3 AM in Srikakulam, while silence rules the coast, your dedication builds your IIT dream.”';
+    motivationMsg = '“At 3 AM, while silence rules, your dedication builds your IIT dream, Maahi 💗.”';
     WeatherIcon = Moon;
     heroGradient = 'from-[#03050B] via-[#090D1C] to-[#111732]';
     accentGlow = 'bg-indigo-500/10';
   } else if (hours >= 5 && hours < 8) {
     environmentName = 'Pre-Dawn Horizon';
-    greeting = 'Good morning. First light over Srikakulam.';
+    greeting = 'Good morning. First light of the day.';
     motivationMsg = '“The syllabus is fixed. The date is locked. Execute today’s plan with absolute calm.”';
     WeatherIcon = Sunrise;
     heroGradient = 'from-[#0B0F1F] via-[#151B35] to-[#252A50]';
@@ -126,20 +143,20 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   } else if (hours >= 17 && hours < 20) {
     environmentName = 'Warm Sunset';
     greeting = 'Good evening.';
-    motivationMsg = '“As evening settles over the coast, review your notes and lock in your practice sets.”';
+    motivationMsg = '“As evening settles, review your notes and lock in your practice sets.”';
     WeatherIcon = Sunset;
     heroGradient = 'from-[#1A1025] via-[#241638] to-[#3B225C]';
     accentGlow = 'bg-orange-500/10';
   } else {
     environmentName = 'Deep Night Cosmos';
     greeting = 'Good night.';
-    motivationMsg = '“Today’s work is done. Sleep knowing you moved one step closer to GATE 2028.”';
+    motivationMsg = '“Today’s work is done. Sleep knowing you moved one step closer to GATE 2028, Maahi 💗.”';
     WeatherIcon = Moon;
     heroGradient = 'from-[#05070E] via-[#0D1122] to-[#161D3A]';
     accentGlow = 'bg-indigo-500/10';
   }
 
-  // 4. Start Date & Day Calculation in IST (Force start date to 30 Aug 2026 or allow live today)
+  // 4. Start Date & Day Calculation in IST
   const startDateStr = settings.startDate || '2026-08-30';
   const start = new Date(startDateStr);
   
@@ -149,7 +166,6 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   const calculatedDayNum = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
   const [selectedDayNum, setSelectedDayNum] = useState(() => {
-    // If today is before start date in real calendar, default to day 1 so user sees the schedule immediately instead of countdown
     return Math.max(1, Math.min(189, calculatedDayNum));
   });
 
@@ -214,7 +230,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   };
 
   const handleNoteChange = (subIdx, text) => {
-    const key = `${selectedDayNum}_${subIdx}_note`;
+    const key = `${selectedDayNum}_${sIdx}_note`;
     setNotes({ ...notes, [key]: text });
   };
 
@@ -283,7 +299,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="bg-white/10 backdrop-blur-xl text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-white/15 shadow-sm">
                 <MapPin className="w-3.5 h-3.5 text-rose-400" />
-                <span>Srikakulam, AP</span>
+                <span>{locationName}</span>
               </span>
               <span className="bg-white/10 backdrop-blur-xl text-white text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-white/15">
                 <WeatherIcon className="w-3.5 h-3.5 text-sky-300 animate-pulse" />
@@ -342,7 +358,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           <div className="lg:col-span-5 bg-white/10 backdrop-blur-2xl rounded-3xl p-6 border border-white/15 shadow-2xl space-y-5">
             <div className="flex justify-between items-center border-b border-white/10 pb-4">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-sky-300">GATE 2028 COMMAND</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-pink-300">Maahi 💗 Command Center</p>
                 <h3 className="text-lg font-black mt-0.5">WEEK {currentWeekNum} • DAY {selectedDayNum}</h3>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center font-black text-xl text-sky-200 border border-white/20 shadow-inner">
@@ -385,7 +401,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             <div className="pt-1">
               <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden p-0.5">
                 <div
-                  className="bg-gradient-to-r from-sky-400 to-indigo-300 h-full rounded-full transition-all duration-700"
+                  className="bg-gradient-to-r from-pink-400 to-indigo-300 h-full rounded-full transition-all duration-700"
                   style={{ width: `${completionPercent}%` }}
                 />
               </div>
@@ -408,8 +424,8 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           <span className="hidden sm:inline">Previous Day</span>
         </button>
         <div className="text-center">
-          <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800">
-            DATE MAPPING ACTIVE
+          <span className="text-[10px] font-black uppercase tracking-wider text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/50 px-3 py-1 rounded-full border border-pink-200 dark:border-pink-800">
+            Maahi 💗 Schedule
           </span>
           <h3 className="font-black text-base sm:text-lg mt-1 text-slate-900 dark:text-slate-100">
             {formatDateReadable(actualDate)}
@@ -426,30 +442,30 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
       {/* WHAT SHOULD I DO NOW? (Decision Fatigue Eliminator Card) */}
       {currentTaskObj ? (
-        <div className="bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-sky-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10">
+        <div className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-pink-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10">
           <div className="space-y-2">
             <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-white/25">
               WHAT TO DO NOW • NO DECISION NEEDED
             </span>
-            <p className="text-xs text-sky-100 font-extrabold tracking-wide uppercase mt-1">{currentTaskObj.subject} • {currentTaskObj.module}</p>
+            <p className="text-xs text-pink-100 font-extrabold tracking-wide uppercase mt-1">{currentTaskObj.subject} • {currentTaskObj.module}</p>
             <h3 className="text-2xl sm:text-3xl font-black tracking-tight">{currentTaskObj.lecture}</h3>
-            <p className="text-xs text-sky-200 font-medium">Current Action: <span className="font-bold underline text-white">{currentTaskObj.taskName}</span></p>
+            <p className="text-xs text-pink-200 font-medium">Current Action: <span className="font-bold underline text-white">{currentTaskObj.taskName}</span></p>
             {nextTaskObj && (
-              <p className="text-[11px] text-sky-200/80">Next up: {nextTaskObj.lecture} ({nextTaskObj.taskName})</p>
+              <p className="text-[11px] text-pink-200/80">Next up: {nextTaskObj.lecture} ({nextTaskObj.taskName})</p>
             )}
           </div>
           <button
             onClick={() => toggleTask(currentTaskObj.sIdx, currentTaskObj.taskName)}
-            className="bg-white hover:bg-sky-50 text-sky-950 px-8 py-4 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 transition-all transform hover:scale-105 active:scale-95 shrink-0"
+            className="bg-white hover:bg-pink-50 text-pink-950 px-8 py-4 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 transition-all transform hover:scale-105 active:scale-95 shrink-0"
           >
-            <Play className="w-4 h-4 fill-sky-950" />
+            <Play className="w-4 h-4 fill-pink-950" />
             <span>MARK TASK DONE</span>
           </button>
         </div>
       ) : (
         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-8 text-white shadow-2xl text-center space-y-3">
           <h3 className="text-3xl font-black">DAY COMPLETE ✅</h3>
-          <p className="text-xs sm:text-sm text-emerald-100 font-medium">All planned academic work for Day {selectedDayNum} is successfully executed. Your study streak is secure.</p>
+          <p className="text-xs sm:text-sm text-emerald-100 font-medium">All planned academic work for Day {selectedDayNum} is successfully executed, Maahi 💗. Your study streak is secure.</p>
         </div>
       )}
 
@@ -457,7 +473,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
       <div className="space-y-5">
         <div className="flex items-center justify-between px-2">
           <h4 className="text-sm font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Today's Executable Plan</h4>
-          <span className="text-xs font-black text-sky-600 dark:text-sky-400">{completedTasks} / {totalTasks} Complete</span>
+          <span className="text-xs font-black text-pink-600 dark:text-pink-400">{completedTasks} / {totalTasks} Complete</span>
         </div>
 
         {dayData && dayData.subjects && dayData.subjects.length > 0 ? (
@@ -472,7 +488,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
                   <div>
-                    <span className="text-xs font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3.5 py-1.5 rounded-xl border border-sky-200 dark:border-sky-800">
+                    <span className="text-xs font-black uppercase tracking-wider text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/50 px-3.5 py-1.5 rounded-xl border border-pink-200 dark:border-pink-800">
                       {sub.name}
                     </span>
                     <h4 className="text-xl font-black mt-3 text-slate-900 dark:text-slate-100">
@@ -484,7 +500,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                   </div>
                   {sub.duration && (
                     <div className="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-2xl text-xs font-black self-start sm:self-auto border border-slate-200/60 dark:border-slate-700">
-                      <Clock className="w-3.5 h-3.5 text-sky-500" />
+                      <Clock className="w-3.5 h-3.5 text-pink-500" />
                       <span>{sub.duration}</span>
                     </div>
                   )}
@@ -505,7 +521,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                           className={`flex items-center space-x-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${
                             isChecked
                               ? 'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-200 shadow-sm'
-                              : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-700'
+                              : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-pink-300 dark:hover:border-pink-700'
                           }`}
                         >
                           {isChecked ? (
@@ -525,7 +541,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                 {/* Personal Note for this Lecture */}
                 <div className="pt-2">
                   <div className="flex items-center space-x-1.5 text-xs font-black text-slate-400 mb-2">
-                    <FileText className="w-3.5 h-3.5 text-indigo-500" />
+                    <FileText className="w-3.5 h-3.5 text-pink-500" />
                     <span>Quick Personal Note / Formula Doubt</span>
                   </div>
                   <input
@@ -533,7 +549,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                     value={currentNote}
                     onChange={(e) => handleNoteChange(sIdx, e.target.value)}
                     placeholder="Add a short note or formula to remember for GATE..."
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>

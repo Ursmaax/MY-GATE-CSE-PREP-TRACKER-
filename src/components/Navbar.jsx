@@ -18,19 +18,19 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo & Maahi 💗 Tag */}
           <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('today')}>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/25 font-bold text-xl group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/25 font-bold text-xl group-hover:scale-105 transition-transform duration-300">
               ⚡
             </div>
             <div>
-              <h1 className="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 dark:from-sky-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent flex items-center gap-1.5">
+              <h1 className="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 dark:from-pink-400 dark:via-rose-400 dark:to-indigo-400 bg-clip-text text-transparent flex items-center gap-1.5">
                 GATE 2028 COMMAND
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                  ULTRA
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20">
+                  Maahi 💗
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Srikakulam Command Center • Just Execute</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Study Command Center • Just Execute</p>
             </div>
           </div>
 
