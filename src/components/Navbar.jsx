@@ -7,7 +7,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
   const navItems = [
     { id: 'today', label: 'Today', icon: CheckSquare },
     { id: 'plan', label: 'Plan', icon: Calendar },
-    { id: 'weeks', label: '27 Weeks', icon: BookOpen },
+    { id: 'weeks', label: '27W', icon: BookOpen },
     { id: 'subjects', label: 'Subjects', icon: Shield },
     { id: 'progress', label: 'Progress', icon: BarChart2 },
     { id: 'quizzes', label: 'Quizzes', icon: Award },
@@ -17,32 +17,32 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-[#070b19]/95 dark:bg-[#04060f]/95 backdrop-blur-2xl border-b border-pink-500/20 dark:border-pink-500/15 shadow-[0_4px_30px_rgba(236,72,153,0.08)] transition-colors duration-300 w-full">
-      <div className="w-full px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-3">
-          {/* Logo & Dreamland Maahi 💗 Branding - Compact to fit 100% scale */}
-          <div className="flex items-center space-x-2.5 cursor-pointer group shrink-0" onClick={() => setActiveTab('today')}>
+    <header className="sticky top-0 z-40 bg-[#070b19]/95 dark:bg-[#04060f]/95 backdrop-blur-2xl border-b border-pink-500/20 dark:border-pink-500/15 shadow-[0_4px_30px_rgba(236,72,153,0.08)] transition-colors duration-300 w-full overflow-x-hidden">
+      <div className="w-full px-2 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-20 gap-2">
+          {/* Logo & Dreamland Maahi 💗 Branding - Compact */}
+          <div className="flex items-center space-x-2 cursor-pointer group shrink-0" onClick={() => setActiveTab('today')}>
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-xl blur-md opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse" />
-              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-[#1a0b2e] via-[#2d1248] to-[#0f172a] flex items-center justify-center text-pink-400 font-black text-xl border border-pink-500/40 shadow-inner">
+              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-[#1a0b2e] via-[#2d1248] to-[#0f172a] flex items-center justify-center text-pink-400 font-black text-lg border border-pink-500/40 shadow-inner">
                 ✨
               </div>
             </div>
             <div className="min-w-0">
-              <div className="flex items-center space-x-1.5">
-                <span className="font-black text-xs sm:text-sm tracking-tight bg-gradient-to-r from-pink-300 via-rose-300 to-indigo-300 bg-clip-text text-transparent truncate">
-                  GATE 2028 DREAMLAND
+              <div className="flex items-center space-x-1">
+                <span className="font-black text-xs tracking-tight bg-gradient-to-r from-pink-300 via-rose-300 to-indigo-300 bg-clip-text text-transparent truncate">
+                  GATE 2028
                 </span>
                 <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-300 border border-pink-500/30 shrink-0">
                   {user ? user.name : 'Maahi 💗'}
                 </span>
               </div>
-              <p className="text-[10px] text-pink-200/70 font-medium tracking-wide truncate">Magical Study Command Center</p>
+              <p className="text-[9px] text-pink-200/70 font-medium tracking-wide truncate">Dreamland Command</p>
             </div>
           </div>
 
-          {/* Desktop Nav - Gorgeous glowing hover effects */}
-          <nav className="hidden lg:flex items-center space-x-1 bg-white/5 dark:bg-black/30 p-1 rounded-2xl border border-white/15 backdrop-blur-md">
+          {/* Desktop Nav - Perfectly fitted without overflowing */}
+          <nav className="hidden lg:flex items-center space-x-0.5 bg-white/5 dark:bg-black/30 p-1 rounded-2xl border border-white/15 backdrop-blur-md shrink">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = activeTab === item.id;
@@ -51,7 +51,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   title={item.label}
-                  className={`flex items-center space-x-1 px-2.5 py-2 rounded-xl text-[11px] font-extrabold transition-all duration-300 whitespace-nowrap relative group/btn ${
+                  className={`flex items-center space-x-1 px-2 py-2 rounded-xl text-[10px] xl:text-[11px] font-extrabold transition-all duration-300 whitespace-nowrap relative group/btn ${
                     active
                       ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(236,72,153,0.6)] scale-105 border border-pink-400/40'
                       : 'text-pink-100/70 hover:text-white hover:bg-gradient-to-r hover:from-pink-500/25 hover:to-purple-500/25 hover:shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:border-pink-500/30 border border-transparent'
@@ -64,31 +64,31 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
             })}
           </nav>
 
-          {/* Right Action buttons - Perfectly aligned without overlapping */}
-          <div className="flex items-center space-x-2 shrink-0">
+          {/* Right Action buttons - Compact to prevent clipping */}
+          <div className="flex items-center space-x-1.5 shrink-0">
             {/* Search Button */}
             <button
               onClick={onOpenSearch}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200/80 hover:text-white border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all shadow-sm"
+              className="p-2 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200/80 hover:text-white border border-white/10 hover:border-pink-500/30 transition-all shadow-sm"
               title="Global Search"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-3.5 h-3.5" />
             </button>
 
-            {/* Focus Mode Button with clean Zap symbol */}
+            {/* Focus Mode Button */}
             <button
               onClick={onToggleFocus}
-              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/35 hover:to-orange-500/35 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border border-amber-500/30 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]"
+              className="hidden sm:flex items-center space-x-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/35 hover:to-orange-500/35 text-amber-300 px-2.5 py-2 rounded-xl text-xs font-black transition-all duration-300 border border-amber-500/30"
               title="Focus Mode"
             >
-              <Zap className="w-4 h-4 text-amber-400 fill-amber-400 animate-bounce shrink-0" />
+              <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-bounce shrink-0" />
               <span className="hidden xl:inline">Focus</span>
             </button>
 
             {/* Theme Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200 border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all text-sm"
+              className="p-2 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200 border border-white/10 hover:border-pink-500/30 transition-all text-xs"
               title="Toggle Theme"
             >
               {darkMode ? '🌙' : '☀️'}
@@ -96,28 +96,28 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
 
             {/* Sign In / User Profile Button */}
             {user ? (
-              <div className="hidden sm:flex items-center space-x-2 bg-pink-500/25 border border-pink-500/40 px-3 py-2 rounded-xl text-xs font-black text-pink-200">
-                <User className="w-3.5 h-3.5 text-pink-300" />
-                <span className="truncate max-w-[100px]">{user.name}</span>
-                <button onClick={onSignOut} title="Sign Out" className="hover:text-white ml-1">
-                  <LogOut className="w-3.5 h-3.5 text-rose-300" />
+              <div className="hidden sm:flex items-center space-x-1.5 bg-pink-500/25 border border-pink-500/40 px-2.5 py-1.5 rounded-xl text-xs font-black text-pink-200">
+                <User className="w-3 h-3 text-pink-300" />
+                <span className="truncate max-w-[80px]">{user.name}</span>
+                <button onClick={onSignOut} title="Sign Out" className="hover:text-white ml-0.5">
+                  <LogOut className="w-3 h-3 text-rose-300" />
                 </button>
               </div>
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="flex items-center space-x-1.5 bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white px-3.5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-pink-500/30 border border-pink-400/30 transition-all"
+                className="flex items-center space-x-1 bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white px-3 py-2 rounded-xl text-xs font-black shadow-lg shadow-pink-500/30 border border-pink-400/30 transition-all"
               >
-                <User className="w-3.5 h-3.5" />
+                <User className="w-3 h-3" />
                 <span>Sign In</span>
               </button>
             )}
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-xl bg-white/5 text-pink-200 border border-white/10"
+              className="lg:hidden p-2 rounded-xl bg-white/5 text-pink-200 border border-white/10"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
         </div>
