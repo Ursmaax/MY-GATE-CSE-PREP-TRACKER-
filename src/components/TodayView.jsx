@@ -46,18 +46,16 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   useEffect(() => {
     async function fetchLiveLocationAndWeather() {
       try {
-        // Step 1: Get IP Geolocation
         const geoRes = await fetch('https://ipapi.co/json/');
         if (!geoRes.ok) throw new Error('IP geolocation failed');
         const geoData = await geoRes.json();
         
-        const lat = geoData.latitude || 17.3850; // default Hyderabad/India if fallback
+        const lat = geoData.latitude || 17.3850;
         const lon = geoData.longitude || 78.4867;
         const cityName = geoData.city || 'Your Location';
         const regionName = geoData.region || '';
         setLocationName(`${cityName}, ${regionName}`);
 
-        // Step 2: Fetch Live Weather for detected lat/lon from Open-Meteo
         const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=sunrise,sunset&timezone=Asia%2FKolkata`);
         if (!weatherRes.ok) throw new Error('Weather fetch failed');
         const wData = await weatherRes.json();
@@ -94,7 +92,6 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           localStorage.setItem('gate2028_live_weather_cache', JSON.stringify({ liveW, locationName: `${cityName}, ${regionName}` }));
         }
       } catch (err) {
-        // Fallback to cached or default
         const cached = localStorage.getItem('gate2028_live_weather_cache');
         if (cached) {
           try {
@@ -111,49 +108,49 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     fetchLiveLocationAndWeather();
   }, []);
 
-  // 3. Immersive Cinematic Atmospheric Themes based on IST Time & Weather
-  let environmentName = 'Night Sky';
+  // 3. Immersive Dreamland Atmospheric Themes (Deep Magical Pink/Purple & Starry Cosmos)
+  let environmentName = 'Starlight Dream';
   let greeting = '';
   let motivationMsg = '';
   let WeatherIcon = Moon;
-  let heroGradient = 'from-slate-950 via-[#0B1021] to-[#121936]';
-  let accentGlow = 'bg-sky-500/10';
+  let heroGradient = 'from-[#12071f] via-[#1f0d3d] to-[#0d0922]';
+  let accentGlow = 'bg-pink-500/20';
 
   if (hours >= 0 && hours < 5) {
-    environmentName = 'Brahmamuhurtha Calm';
-    greeting = 'Good morning. The world is quiet. This is your time.';
-    motivationMsg = '“At 3 AM, while silence rules, your dedication builds your IIT dream, Maahi 💗.”';
+    environmentName = 'Brahmamuhurtha Dream';
+    greeting = 'Good morning. The starlight whispers your IIT dream.';
+    motivationMsg = '“At 3 AM, while the universe rests, your dedication builds your destiny, Maahi 💗.”';
     WeatherIcon = Moon;
-    heroGradient = 'from-[#03050B] via-[#090D1C] to-[#111732]';
-    accentGlow = 'bg-indigo-500/10';
+    heroGradient = 'from-[#0a0314] via-[#16082b] to-[#0c051a]';
+    accentGlow = 'bg-purple-500/25';
   } else if (hours >= 5 && hours < 8) {
-    environmentName = 'Pre-Dawn Horizon';
-    greeting = 'Good morning. First light of the day.';
-    motivationMsg = '“The syllabus is fixed. The date is locked. Execute today’s plan with absolute calm.”';
+    environmentName = 'Magical Dawn';
+    greeting = 'Good morning. First pink light over the horizon.';
+    motivationMsg = '“The path is clear. The schedule is locked. Execute today’s plan with absolute grace.”';
     WeatherIcon = Sunrise;
-    heroGradient = 'from-[#0B0F1F] via-[#151B35] to-[#252A50]';
-    accentGlow = 'bg-amber-500/10';
+    heroGradient = 'from-[#140824] via-[#24103f] to-[#12082b]';
+    accentGlow = 'bg-rose-500/20';
   } else if (hours >= 8 && hours < 17) {
-    environmentName = 'Daylight Focus';
+    environmentName = 'Radiant Daylight';
     greeting = hours < 12 ? 'Good morning ☀️' : 'Good afternoon.';
-    motivationMsg = '“One lecture at a time. No subject switching. Trust the coaching schedule.”';
+    motivationMsg = '“One lecture at a time. No subject switching. Trust the coaching schedule, Maahi 💗.”';
     WeatherIcon = Sun;
-    heroGradient = 'from-[#0F172A] via-[#1E293B] to-[#334155]';
-    accentGlow = 'bg-sky-500/10';
+    heroGradient = 'from-[#100c24] via-[#1c123d] to-[#0f172a]';
+    accentGlow = 'bg-pink-500/20';
   } else if (hours >= 17 && hours < 20) {
-    environmentName = 'Warm Sunset';
+    environmentName = 'Twilight Dusk';
     greeting = 'Good evening.';
-    motivationMsg = '“As evening settles, review your notes and lock in your practice sets.”';
+    motivationMsg = '“As twilight settles, review your notes and lock in your practice sets with confidence.”';
     WeatherIcon = Sunset;
-    heroGradient = 'from-[#1A1025] via-[#241638] to-[#3B225C]';
-    accentGlow = 'bg-orange-500/10';
+    heroGradient = 'from-[#1f092b] via-[#33114a] to-[#140826]';
+    accentGlow = 'bg-pink-500/25';
   } else {
-    environmentName = 'Deep Night Cosmos';
+    environmentName = 'Deep Dreamland Cosmos';
     greeting = 'Good night.';
-    motivationMsg = '“Today’s work is done. Sleep knowing you moved one step closer to GATE 2028, Maahi 💗.”';
+    motivationMsg = '“Today’s work is done. Sleep peacefully knowing you moved closer to GATE 2028, Maahi 💗.”';
     WeatherIcon = Moon;
-    heroGradient = 'from-[#05070E] via-[#0D1122] to-[#161D3A]';
-    accentGlow = 'bg-indigo-500/10';
+    heroGradient = 'from-[#080312] via-[#130724] to-[#0b0417]';
+    accentGlow = 'bg-indigo-500/25';
   }
 
   // 4. Start Date & Day Calculation in IST
@@ -275,11 +272,11 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans">
       {/* Undo Toast Notification */}
       {lastToggled && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3.5 border border-slate-800 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#150a26] text-pink-200 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3.5 border border-pink-500/30 animate-bounce">
           <span className="text-xs font-bold">Task updated</span>
           <button
             onClick={undoLastToggle}
-            className="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded-xl text-xs font-black flex items-center space-x-1"
+            className="bg-gradient-to-r from-pink-600 to-rose-600 text-white px-3 py-1 rounded-xl text-xs font-black flex items-center space-x-1 shadow-md"
           >
             <Undo2 className="w-3.5 h-3.5" />
             <span>Undo</span>
@@ -287,22 +284,22 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         </div>
       )}
 
-      {/* REIMAGINED CINEMATIC HERO COMPOSITION */}
-      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden border border-white/10 transition-all duration-1000`}>
-        {/* Ambient atmospheric lighting */}
-        <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[100px] pointer-events-none`} />
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* DREAMLAND CINEMATIC HERO COMPOSITION */}
+      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-[0_10px_50px_rgba(236,72,153,0.15)] relative overflow-hidden border border-pink-500/20 transition-all duration-1000`}>
+        {/* Ambient atmospheric glowing starlight */}
+        <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[120px] pointer-events-none`} />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Hero: Time, Environment & Greeting */}
           <div className="lg:col-span-7 space-y-6">
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="bg-white/10 backdrop-blur-xl text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-white/15 shadow-sm">
-                <MapPin className="w-3.5 h-3.5 text-rose-400" />
+              <span className="bg-white/10 backdrop-blur-xl text-pink-200 text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-pink-500/30 shadow-sm">
+                <MapPin className="w-3.5 h-3.5 text-pink-400" />
                 <span>{locationName}</span>
               </span>
-              <span className="bg-white/10 backdrop-blur-xl text-white text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-white/15">
-                <WeatherIcon className="w-3.5 h-3.5 text-sky-300 animate-pulse" />
+              <span className="bg-white/10 backdrop-blur-xl text-pink-200 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-pink-500/30">
+                <WeatherIcon className="w-3.5 h-3.5 text-pink-300 animate-pulse" />
                 <span>{environmentName} • {weather.temp}°C</span>
               </span>
               <span className="bg-amber-500/20 text-amber-300 text-xs font-black px-3.5 py-1.5 rounded-full border border-amber-500/30 flex items-center space-x-1.5 shadow-sm">
@@ -313,17 +310,17 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
             <div className="space-y-2">
               <div className="flex items-baseline space-x-3">
-                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-md">
+                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-[0_2px_15px_rgba(236,72,153,0.4)]">
                   {timeString}
                 </h1>
-                <span className="text-xs font-black text-sky-200 uppercase tracking-widest bg-white/10 px-2.5 py-1 rounded-lg">
+                <span className="text-xs font-black text-pink-300 uppercase tracking-widest bg-white/10 px-2.5 py-1 rounded-lg border border-pink-500/20">
                   {ampm} • IST
                 </span>
               </div>
-              <p className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight">
+              <p className="text-xl sm:text-2xl font-black text-pink-100 tracking-tight">
                 {greeting}
               </p>
-              <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed font-medium italic">
+              <p className="text-pink-200/80 text-sm sm:text-base max-w-xl leading-relaxed font-medium italic">
                 {motivationMsg}
               </p>
             </div>
@@ -337,7 +334,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                 className={`px-5 py-3.5 rounded-2xl font-black text-xs flex items-center space-x-2 transition-all shadow-md ${
                   settings.lockToday
                     ? 'bg-rose-600 text-white'
-                    : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/15'
+                    : 'bg-white/10 hover:bg-white/20 text-pink-100 backdrop-blur-md border border-pink-500/30'
                 }`}
               >
                 {settings.lockToday ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
@@ -346,66 +343,66 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
               <button
                 onClick={onStartFocus}
-                className="bg-white hover:bg-sky-50 text-slate-950 px-7 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl shadow-black/25 flex items-center space-x-2.5 transition-all transform hover:scale-105 active:scale-95"
+                className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white px-7 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(236,72,153,0.4)] flex items-center space-x-2.5 transition-all transform hover:scale-105 active:scale-95"
               >
-                <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
                 <span>START FOCUS MODE</span>
               </button>
             </div>
           </div>
 
-          {/* Right Hero: Embedded Weather Card & Core Stats */}
-          <div className="lg:col-span-5 bg-white/10 backdrop-blur-2xl rounded-3xl p-6 border border-white/15 shadow-2xl space-y-5">
-            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+          {/* Right Hero: Dreamland Weather Card & Core Stats */}
+          <div className="lg:col-span-5 bg-white/5 backdrop-blur-2xl rounded-3xl p-6 border border-pink-500/20 shadow-2xl space-y-5">
+            <div className="flex justify-between items-center border-b border-pink-500/20 pb-4">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-pink-300">Maahi 💗 Command Center</p>
-                <h3 className="text-lg font-black mt-0.5">WEEK {currentWeekNum} • DAY {selectedDayNum}</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-pink-300">Maahi 💗 Dreamland</p>
+                <h3 className="text-lg font-black mt-0.5 text-white">WEEK {currentWeekNum} • DAY {selectedDayNum}</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center font-black text-xl text-sky-200 border border-white/20 shadow-inner">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center font-black text-xl text-white border border-pink-400/40 shadow-md">
                 {completionPercent}%
               </div>
             </div>
 
             {/* Weather Breakdown */}
             <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
-                <Droplets className="w-4 h-4 text-sky-400 shrink-0" />
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
+                <Droplets className="w-4 h-4 text-pink-400 shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Humidity</p>
-                  <p className="text-sm font-black">{weather.humidity}%</p>
+                  <p className="text-[10px] text-pink-200/60 uppercase">Humidity</p>
+                  <p className="text-sm font-black text-white">{weather.humidity}%</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
-                <Wind className="w-4 h-4 text-indigo-400 shrink-0" />
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
+                <Wind className="w-4 h-4 text-purple-400 shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Wind</p>
-                  <p className="text-sm font-black">{weather.wind} km/h</p>
+                  <p className="text-[10px] text-pink-200/60 uppercase">Wind</p>
+                  <p className="text-sm font-black text-white">{weather.wind} km/h</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
                 <Sunrise className="w-4 h-4 text-amber-400 shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Sunrise</p>
-                  <p className="text-sm font-black">{weather.sunrise}</p>
+                  <p className="text-[10px] text-pink-200/60 uppercase">Sunrise</p>
+                  <p className="text-sm font-black text-white">{weather.sunrise}</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
                 <Sunset className="w-4 h-4 text-orange-400 shrink-0" />
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Sunset</p>
-                  <p className="text-sm font-black">{weather.sunset}</p>
+                  <p className="text-[10px] text-pink-200/60 uppercase">Sunset</p>
+                  <p className="text-sm font-black text-white">{weather.sunset}</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-1">
-              <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden p-0.5">
+              <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden p-0.5 border border-pink-500/20">
                 <div
-                  className="bg-gradient-to-r from-pink-400 to-indigo-300 h-full rounded-full transition-all duration-700"
+                  className="bg-gradient-to-r from-pink-500 via-rose-500 to-indigo-500 h-full rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
                   style={{ width: `${completionPercent}%` }}
                 />
               </div>
-              <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-300 mt-2 uppercase tracking-wider">
+              <div className="flex justify-between items-center text-[10px] font-extrabold text-pink-200/80 mt-2 uppercase tracking-wider">
                 <span>Today's Progress</span>
                 <span>{completedTasks} / {totalTasks} Tasks</span>
               </div>
@@ -415,7 +412,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
       </div>
 
       {/* Date Navigator Header */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center justify-between transition-colors">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-pink-500/20 shadow-sm flex items-center justify-between transition-colors">
         <button
           onClick={() => setSelectedDayNum(prev => Math.max(1, prev - 1))}
           className="flex items-center space-x-1.5 text-xs font-bold px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
@@ -484,7 +481,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             return (
               <div
                 key={sIdx}
-                className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md"
+                className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-pink-500/15 dark:border-pink-500/10 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
                   <div>
@@ -556,7 +553,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             );
           })
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-slate-200/80 dark:border-slate-800 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
             <h4 className="text-lg font-black text-slate-700 dark:text-slate-300">No Scheduled Lectures Today</h4>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
               Reset day or buffer day. Use this time to revise previous concepts or solve GATE PYQs!

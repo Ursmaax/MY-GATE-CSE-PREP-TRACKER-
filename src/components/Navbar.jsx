@@ -17,27 +17,32 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-300">
+    <header className="sticky top-0 z-40 bg-[#070b19]/90 dark:bg-[#04060f]/95 backdrop-blur-2xl border-b border-pink-500/20 dark:border-pink-500/15 shadow-[0_4px_30px_rgba(236,72,153,0.08)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo & Maahi 💗 Tag */}
-          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('today')}>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/25 font-bold text-xl group-hover:scale-105 transition-transform duration-300">
-              ⚡
+        <div className="flex items-center justify-between h-20">
+          {/* Logo & Dreamland Maahi 💗 Branding */}
+          <div className="flex items-center space-x-4 cursor-pointer group" onClick={() => setActiveTab('today')}>
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-2xl blur-md opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse" />
+              <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1a0b2e] via-[#2d1248] to-[#0f172a] flex items-center justify-center text-pink-400 font-black text-2xl border border-pink-500/40 shadow-inner">
+                ✨
+              </div>
             </div>
             <div>
-              <h1 className="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 dark:from-pink-400 dark:via-rose-400 dark:to-indigo-400 bg-clip-text text-transparent flex items-center gap-1.5">
-                GATE 2028 COMMAND
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20">
+              <div className="flex items-center space-x-2">
+                <span className="font-black text-base sm:text-lg tracking-wider bg-gradient-to-r from-pink-300 via-rose-300 to-indigo-300 bg-clip-text text-transparent drop-shadow">
+                  GATE 2028 DREAMLAND
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-300 border border-pink-500/30 shadow-[0_0_12px_rgba(236,72,153,0.3)]">
                   Maahi 💗
                 </span>
-              </h1>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Study Command Center • Just Execute</p>
+              </div>
+              <p className="text-xs text-pink-200/60 font-medium tracking-wide">Magical Study Command Center • Just Execute</p>
             </div>
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-1.5 bg-white/5 dark:bg-black/30 p-1.5 rounded-2xl border border-white/10 backdrop-blur-md">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = activeTab === item.id;
@@ -45,10 +50,10 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  className={`flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-300 ${
                     active
-                      ? 'bg-gradient-to-r from-pink-600 to-indigo-600 text-white shadow-lg shadow-pink-500/25 scale-[1.02]'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-pink-600 dark:hover:text-pink-400'
+                      ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(236,72,153,0.4)] scale-[1.02] border border-pink-400/30'
+                      : 'text-pink-100/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -59,32 +64,32 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
           </nav>
 
           {/* Right Action buttons */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2.5">
             <button
               onClick={onOpenSearch}
-              className="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-pink-200/80 hover:text-white border border-white/10 transition-colors shadow-sm"
               title="Global Search"
             >
-              <Search className="w-4.5 h-4.5" />
+              <Search className="w-4 h-4" />
             </button>
             <button
               onClick={onToggleFocus}
-              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all duration-300 border border-amber-500/20 shadow-sm"
+              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 px-4 py-3 rounded-2xl text-xs font-black transition-all duration-300 border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
               title="Focus Mode"
             >
-              <Zap className="w-4 h-4 text-amber-500 fill-amber-500 animate-bounce" />
+              <Zap className="w-4 h-4 text-amber-400 fill-amber-400 animate-bounce" />
               <span>Focus Mode</span>
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-base"
+              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-pink-200 border border-white/10 transition-colors text-sm"
               title="Toggle Theme"
             >
-              {darkMode ? '☀️' : '🌙'}
+              {darkMode ? '🌙' : '☀️'}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="lg:hidden p-3 rounded-2xl bg-white/5 text-pink-200 border border-white/10"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -94,7 +99,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-1.5 animate-fadeIn">
+        <div className="lg:hidden bg-[#070b19]/95 backdrop-blur-2xl border-b border-pink-500/20 px-4 pt-3 pb-6 space-y-2 animate-fadeIn">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = activeTab === item.id;
@@ -105,13 +110,13 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                   setActiveTab(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-sm font-extrabold transition-all ${
                   active
-                    ? 'bg-gradient-to-r from-pink-600 to-indigo-600 text-white shadow-md'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-gradient-to-r from-pink-600 to-indigo-600 text-white shadow-lg shadow-pink-500/30'
+                    : 'text-pink-100/70 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4.5 h-4.5" />
                 <span>{item.label}</span>
               </button>
             );
@@ -121,9 +126,9 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
               onToggleFocus();
               setMobileMenuOpen(false);
             }}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+            className="w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-sm font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30"
           >
-            <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
+            <Zap className="w-4.5 h-4.5 text-amber-400 fill-amber-400" />
             <span>Start Focus Mode</span>
           </button>
         </div>
