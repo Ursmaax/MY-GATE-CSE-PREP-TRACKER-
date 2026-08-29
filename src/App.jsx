@@ -1,0 +1,131 @@
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import TodayView from './components/TodayView';
+import PlanView from './components/PlanView';
+import WeeksView from './components/WeeksView';
+import SubjectsView from './components/SubjectsView';
+import ProgressView from './components/ProgressView';
+import RevisionView from './components/RevisionView';
+import SettingsView from './components/SettingsView';
+import FocusMode from './components/FocusMode';
+import SearchModal from './components/SearchModal';
+import { initialScheduleData } from './data/scheduleData';
+import { loadSettings, saveSettings, loadProgress, saveProgress, loadNotes, saveNotes } from './utils/storage';
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('today');
+  const [settings, setSettings] = useState(() => loadSettings());
+  const [progress, setProgress] = useState(() => loadProgress());
+  const [notes, setNotes] = useState(() => loadNotes());
+  const [focusModeOpen, setFocusModeOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(settings.darkMode);
+
+  // Sync settings & progress to localStorage
+  useEffect(() => {
+    saveSettings({ ...settings, darkMode });
+  }, [settings, darkMode]);
+
+  useEffect(() => {
+    saveProgress(progress);
+  }, [progress]);
+
+  useEffect(() => {
+    saveNotes(notes);
+  }, [notes]);
+
+  // Apply dark class to document body
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
+      {/* Top Navbar */}
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onOpenSearch={() => setSearchOpen(true)}
+        onToggleFocus={() => setFocusModeOpen(true)}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 pb-16">
+        {activeTab === 'today' && (
+          <TodayView
+            scheduleData={initialScheduleData}
+            settings={settings}
+            progress={progress}
+            setProgress={setProgress}
+            notes={notes}
+            setNotes={setNotes}
+            onStartFocus={() => setFocusModeOpen(true)}
+          />
+        )}
+        {activeTab === 'plan' && (
+          <PlanView
+            scheduleData={initialScheduleData}
+            settings={settings}
+            progress={progress}
+            setActiveTab={setActiveTab}
+          />
+        )}
+        {activeTab === 'weeks' && (
+          <WeeksView
+            scheduleData={initialScheduleData}
+            progress={progress}
+            settings={settings}
+          />
+        )}
+        {activeTab === 'subjects' && (
+          <SubjectsView
+            scheduleData={initialScheduleData}
+            progress={progress}
+          />
+        )}
+        {activeTab === 'progress' && (
+          <ProgressView
+            scheduleData={initialScheduleData}
+            progress={progress}
+            settings={settings}
+          />
+        )}
+        {activeTab === 'revision' && (
+          <RevisionView />
+        )}
+        {activeTab === 'settings' && (
+          <SettingsView
+            settings={settings}
+            setSettings={setSettings}
+          />
+        )}
+      </main>
+
+      {/* Focus Mode Overlay */}
+      {focusModeOpen && (
+        <FocusMode
+          scheduleData={initialScheduleData}
+          settings={settings}
+          progress={progress}
+          setProgress={setProgress}
+          onClose={() => setFocusModeOpen(false)}
+        />
+      )}
+
+      {/* Global Search Modal */}
+      {searchOpen && (
+        <SearchModal
+          scheduleData={initialScheduleData}
+          onClose={() => setSearchOpen(false)}
+          setActiveTab={setActiveTab}
+        />
+      )}
+    </div>
+  );
+}
