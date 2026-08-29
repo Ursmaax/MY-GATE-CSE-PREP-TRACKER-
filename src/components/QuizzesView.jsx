@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar, BookOpen } from 'lucide-react';
+import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar, Target, BookOpen } from 'lucide-react';
 import { loadQuizzes, saveQuizzes } from '../utils/storage';
 
 export default function QuizzesView() {
@@ -45,19 +45,28 @@ export default function QuizzesView() {
     saveQuizzes(updated);
   };
 
-  // Analytics
   const totalAttempted = quizzes.length;
   const avgPercentage = totalAttempted > 0 
     ? Math.round(quizzes.reduce((acc, q) => acc + q.percentage, 0) / totalAttempted)
     : 0;
   const bestScore = totalAttempted > 0 ? Math.max(...quizzes.map(q => q.percentage)) : 0;
 
+  // Group by subject for performance analysis
+  const subjectPerformance = {};
+  quizzes.forEach(q => {
+    if (!subjectPerformance[q.subject]) {
+      subjectPerformance[q.subject] = { totalPct: 0, count: 0 };
+    }
+    subjectPerformance[q.subject].totalPct += q.percentage;
+    subjectPerformance[q.subject].count += 1;
+  });
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans">
       {/* Header & Stats Banner */}
       <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6 transition-colors">
         <div>
-          <span className="text-xs font-black uppercase tracking-widest text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/50 px-3 py-1 rounded-full border border-pink-200 dark:border-pink-800">
+          <span className="text-xs font-black uppercase tracking-widest text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/50 px-3.5 py-1.5 rounded-full border border-pink-200 dark:border-pink-800">
             MAAHI 💗 QUIZ COMMAND
           </span>
           <h2 className="text-3xl font-black mt-2 tracking-tight">Self-Assessment Quizzes</h2>
@@ -81,6 +90,30 @@ export default function QuizzesView() {
           </div>
         </div>
       </div>
+
+      {/* Subject Performance Breakdown if quizzes exist */}
+      {Object.keys(subjectPerformance).length > 0 && (
+        <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+          <h3 className="font-black text-lg text-slate-900 dark:text-slate-100">Subject-wise Quiz Accuracy</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {Object.entries(subjectPerformance).map(([sub, stats]) => {
+              const avg = Math.round(stats.totalPct / stats.count);
+              return (
+                <div key={sub} className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200/50 dark:border-slate-700 space-y-2">
+                  <div className="flex justify-between items-center text-xs font-black">
+                    <span className="text-slate-800 dark:text-slate-200 truncate">{sub}</span>
+                    <span className="text-pink-600 dark:text-pink-400">{avg}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                    <div className="bg-gradient-to-r from-pink-500 to-indigo-600 h-full rounded-full" style={{ width: `${avg}%` }} />
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-bold">{stats.count} quiz{stats.count > 1 ? 'zes' : ''} recorded</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Add Quiz Form */}
       <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm">

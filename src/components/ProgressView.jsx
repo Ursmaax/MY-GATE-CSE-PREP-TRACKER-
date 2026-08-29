@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart2, Flame, Award, CheckCircle2, Shield, Target, TrendingUp, BookOpen } from 'lucide-react';
+import { BarChart2, Flame, Award, CheckCircle2, Shield, Target, TrendingUp, BookOpen, Check } from 'lucide-react';
 import { loadQuizzes, loadTests } from '../utils/storage';
 
 export default function ProgressView({ scheduleData, progress, settings }) {
