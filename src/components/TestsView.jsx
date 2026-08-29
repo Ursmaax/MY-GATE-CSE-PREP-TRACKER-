@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar } from 'lucide-react';
+import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar, Sparkles } from 'lucide-react';
 import { loadTests, saveTests } from '../utils/storage';
 
 export default function TestsView() {
@@ -51,38 +51,38 @@ export default function TestsView() {
   const bestScore = totalAttempted > 0 ? Math.max(...tests.map(t => t.percentage)) : 0;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fadeIn font-sans text-white">
       {/* Header & Stats Banner */}
-      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6 transition-colors">
+      <div className="w-full bg-gradient-to-br from-[#180a2c]/95 via-[#120720]/95 to-[#0b0416]/95 backdrop-blur-2xl rounded-[2.5rem] p-6 sm:p-10 border border-pink-500/25 shadow-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <span className="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
-            MAAHI 💗 MOCK TEST COMMAND
+          <span className="text-xs font-black uppercase tracking-widest text-pink-300 bg-pink-500/20 px-3.5 py-1.5 rounded-full border border-pink-500/30">
+            ✨ MAAHI 💗 MOCK TEST COMMAND
           </span>
-          <h2 className="text-3xl font-black mt-2 tracking-tight">Full-Length & Subject Tests</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          <h2 className="text-3xl font-black mt-3 tracking-tight text-white">Full-Length & Subject Tests</h2>
+          <p className="text-sm text-pink-200/70 mt-1 font-medium">
             Track your mock test scores, accuracy trends, and readiness for GATE 2028.
           </p>
         </div>
 
         <div className="grid grid-cols-3 gap-3 w-full md:w-auto">
-          <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/50 dark:border-slate-700 text-center">
-            <p className="text-[10px] font-black uppercase text-slate-400">Tests Taken</p>
-            <p className="text-xl font-black mt-1 text-slate-900 dark:text-slate-100">{totalAttempted}</p>
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-pink-500/20 text-center shadow-inner">
+            <p className="text-[10px] font-black uppercase text-pink-300">Tests Taken</p>
+            <p className="text-xl font-black mt-1 text-white">{totalAttempted}</p>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/50 dark:border-slate-700 text-center">
-            <p className="text-[10px] font-black uppercase text-slate-400">Avg Score</p>
-            <p className="text-xl font-black mt-1 text-indigo-600 dark:text-indigo-400">{avgPercentage}%</p>
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-pink-500/20 text-center shadow-inner">
+            <p className="text-[10px] font-black uppercase text-pink-300">Avg Score</p>
+            <p className="text-xl font-black mt-1 text-pink-400">{avgPercentage}%</p>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/50 dark:border-slate-700 text-center">
-            <p className="text-[10px] font-black uppercase text-slate-400">Best Score</p>
-            <p className="text-xl font-black mt-1 text-emerald-600 dark:text-emerald-400">{bestScore}%</p>
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-pink-500/20 text-center shadow-inner">
+            <p className="text-[10px] font-black uppercase text-pink-300">Best Score</p>
+            <p className="text-xl font-black mt-1 text-emerald-400">{bestScore}%</p>
           </div>
         </div>
       </div>
 
       {/* Add Test Form */}
-      <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm">
-        <h3 className="font-black text-lg text-slate-900 dark:text-slate-100 mb-4">Record New Test Score</h3>
+      <div className="w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-6 sm:p-8 border border-pink-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] space-y-4">
+        <h3 className="font-black text-lg text-white mb-4">Record New Test Score</h3>
         <form onSubmit={addTest} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <input
             type="text"
@@ -90,12 +90,12 @@ export default function TestsView() {
             onChange={(e) => setName(e.target.value)}
             placeholder="Test Name (e.g. Mock Test 1)"
             required
-            className="lg:col-span-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-slate-100"
+            className="lg:col-span-2 bg-white/5 border border-pink-500/25 rounded-2xl px-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
           />
           <select
             value={testType}
             onChange={(e) => setTestType(e.target.value)}
-            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-slate-100"
+            className="bg-[#120720] border border-pink-500/25 rounded-2xl px-3 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-500 text-white"
           >
             <option value="Mock Test">Mock Test</option>
             <option value="Subject Test">Subject Test</option>
@@ -106,7 +106,7 @@ export default function TestsView() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Subject / Scope"
-            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-slate-100"
+            className="bg-white/5 border border-pink-500/25 rounded-2xl px-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
           />
           <div className="flex space-x-2">
             <input
@@ -116,7 +116,7 @@ export default function TestsView() {
               onChange={(e) => setScore(e.target.value)}
               placeholder="Marks"
               required
-              className="w-1/2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-slate-100"
+              className="w-1/2 bg-white/5 border border-pink-500/25 rounded-2xl px-3 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
             />
             <input
               type="number"
@@ -125,12 +125,12 @@ export default function TestsView() {
               onChange={(e) => setTotal(e.target.value)}
               placeholder="Total"
               required
-              className="w-1/2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-slate-100"
+              className="w-1/2 bg-white/5 border border-pink-500/25 rounded-2xl px-3 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
             />
           </div>
           <button
             type="submit"
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3 rounded-2xl text-sm shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2 transition-all transform hover:scale-105"
+            className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white font-black px-6 py-3.5 rounded-2xl text-sm shadow-lg shadow-pink-500/30 flex items-center justify-center space-x-2 transition-all transform hover:scale-105"
           >
             <Plus className="w-4 h-4" />
             <span>Save Test</span>
@@ -140,33 +140,33 @@ export default function TestsView() {
 
       {/* Tests List */}
       <div className="space-y-4">
-        <h3 className="font-black text-lg text-slate-900 dark:text-slate-100 px-2">Test History</h3>
+        <h3 className="font-black text-lg text-white px-2">Test History</h3>
         {tests.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {tests.map(t => (
               <div
                 key={t.id}
-                className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center justify-between transition-all hover:shadow-md"
+                className="w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-6 border border-pink-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between transition-all hover:border-pink-500/40"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-black uppercase bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 px-2.5 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                    <span className="text-[10px] font-black uppercase bg-pink-500/20 text-pink-300 px-2.5 py-0.5 rounded border border-pink-500/30">
                       {t.testType}
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">{t.date}</span>
+                    <span className="text-xs text-pink-200/60 font-medium">{t.date}</span>
                   </div>
-                  <h4 className="font-black text-base text-slate-900 dark:text-slate-100">{t.name}</h4>
-                  <p className="text-xs text-slate-500 font-bold">Scope: {t.subject}</p>
+                  <h4 className="font-black text-base text-white">{t.name}</h4>
+                  <p className="text-xs text-pink-200/70 font-bold">Scope: {t.subject}</p>
                 </div>
 
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <p className="text-lg font-black text-indigo-600 dark:text-indigo-400">{t.score} / {t.total}</p>
-                    <p className="text-xs font-extrabold text-slate-400">{t.percentage}%</p>
+                    <p className="text-lg font-black text-pink-400">{t.score} / {t.total}</p>
+                    <p className="text-xs font-extrabold text-pink-200/60">{t.percentage}%</p>
                   </div>
                   <button
                     onClick={() => deleteTest(t.id)}
-                    className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors"
+                    className="p-2.5 text-rose-400 hover:bg-rose-500/20 rounded-xl transition-colors border border-rose-500/30"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -175,8 +175,8 @@ export default function TestsView() {
             ))}
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-slate-200/80 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 text-sm font-bold">No mock or subject tests recorded yet. Record your test scores above.</p>
+          <div className="w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-12 text-center border border-pink-500/20 shadow-sm">
+            <p className="text-pink-200/70 text-sm font-bold">No mock or subject tests recorded yet. Record your test scores above.</p>
           </div>
         )}
       </div>

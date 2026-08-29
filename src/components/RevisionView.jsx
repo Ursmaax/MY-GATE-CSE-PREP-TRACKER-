@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Repeat, Plus, CheckCircle2, Circle, Calendar } from 'lucide-react';
+import { Repeat, Plus, CheckCircle2, Circle, Calendar, Sparkles } from 'lucide-react';
 import { loadRevisions, saveRevisions } from '../utils/storage';
 
 export default function RevisionView() {
@@ -40,13 +40,13 @@ export default function RevisionView() {
   const items = Object.values(revisions);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 animate-fadeIn">
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors">
-        <span className="text-xs font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800">
-          SPACED REVISION
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fadeIn font-sans text-white">
+      <div className="w-full bg-gradient-to-br from-[#180a2c]/95 via-[#120720]/95 to-[#0b0416]/95 backdrop-blur-2xl rounded-[2.5rem] p-6 sm:p-10 border border-pink-500/25 shadow-2xl">
+        <span className="text-xs font-extrabold uppercase tracking-widest text-pink-300 bg-pink-500/20 px-3.5 py-1.5 rounded-full border border-pink-500/30">
+          ✨ SPACED REVISION
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black mt-2 tracking-tight">Revision & Spaced Repetition System</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <h2 className="text-2xl sm:text-3xl font-black mt-3 tracking-tight text-white">Revision & Spaced Repetition System</h2>
+        <p className="text-sm text-pink-200/70 mt-1 font-medium">
           Keep core concepts fresh in your memory with scheduled revision tasks.
         </p>
 
@@ -57,12 +57,12 @@ export default function RevisionView() {
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Topic to revise (e.g. AVL Tree rotations)"
-            className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100"
+            className="flex-1 bg-white/5 border border-pink-500/25 rounded-2xl px-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
           />
           <select
             value={newSubject}
             onChange={(e) => setNewSubject(e.target.value)}
-            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100"
+            className="bg-[#120720] border border-pink-500/25 rounded-2xl px-4 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-500 text-white"
           >
             <option value="Data Structures">Data Structures</option>
             <option value="Algorithms">Algorithms</option>
@@ -73,7 +73,7 @@ export default function RevisionView() {
           </select>
           <button
             type="submit"
-            className="bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl text-sm shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 transition-all transform hover:scale-105"
+            className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white font-black px-6 py-3.5 rounded-2xl text-sm shadow-lg shadow-pink-500/30 flex items-center justify-center space-x-2 transition-all transform hover:scale-105"
           >
             <Plus className="w-4 h-4" />
             <span>Add Revision</span>
@@ -82,33 +82,33 @@ export default function RevisionView() {
       </div>
 
       {/* Revision List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {items.length > 0 ? (
           items.map(item => (
             <div
               key={item.id}
-              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border shadow-sm flex items-center justify-between transition-all duration-300 ${
-                item.completed ? 'border-emerald-300 dark:border-emerald-800 opacity-75' : 'border-slate-200/80 dark:border-slate-800 hover:border-sky-300'
+              className={`w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-6 border shadow-xl flex items-center justify-between transition-all duration-300 ${
+                item.completed ? 'border-emerald-500/40 opacity-75' : 'border-pink-500/20 hover:border-pink-500/40'
               }`}
             >
               <div className="flex items-center space-x-4">
                 <button onClick={() => toggleRevision(item.id)}>
                   {item.completed ? (
-                    <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                    <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                   ) : (
-                    <Circle className="w-6 h-6 text-slate-400" />
+                    <Circle className="w-6 h-6 text-pink-400/60" />
                   )}
                 </button>
                 <div>
-                  <h4 className={`font-extrabold text-base ${item.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'}`}>
+                  <h4 className={`font-extrabold text-base ${item.completed ? 'line-through text-pink-300/50' : 'text-white'}`}>
                     {item.title}
                   </h4>
-                  <div className="flex items-center space-x-2.5 mt-1.5">
-                    <span className="text-[10px] font-black uppercase bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 px-2.5 py-0.5 rounded border border-sky-200 dark:border-sky-800">
+                  <div className="flex items-center space-x-3 mt-1.5">
+                    <span className="text-[10px] font-black uppercase bg-pink-500/20 text-pink-300 px-2.5 py-0.5 rounded border border-pink-500/30">
                       {item.subject}
                     </span>
-                    <span className="text-xs text-slate-400 font-medium flex items-center space-x-1">
-                      <Calendar className="w-3.5 h-3.5" />
+                    <span className="text-xs text-pink-200/60 font-medium flex items-center space-x-1">
+                      <Calendar className="w-3.5 h-3.5 text-pink-400" />
                       <span>Due: {item.dueDate}</span>
                     </span>
                   </div>
@@ -117,15 +117,15 @@ export default function RevisionView() {
 
               <button
                 onClick={() => deleteRevision(item.id)}
-                className="text-xs text-rose-500 hover:underline px-3 py-1.5 font-bold"
+                className="text-xs text-rose-400 hover:underline px-4 py-2 font-black bg-rose-500/10 rounded-xl border border-rose-500/20 transition-all"
               >
                 Delete
               </button>
             </div>
           ))
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200/80 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 text-sm font-bold">No revision items added yet. Add topics above for spaced repetition.</p>
+          <div className="w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-12 text-center border border-pink-500/20 shadow-sm">
+            <p className="text-pink-200/70 text-sm font-bold">No revision items added yet. Add topics above for spaced repetition.</p>
           </div>
         )}
       </div>
