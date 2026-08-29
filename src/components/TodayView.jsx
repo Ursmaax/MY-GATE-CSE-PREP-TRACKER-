@@ -3,7 +3,7 @@ import {
   CheckCircle2, Circle, Zap, ChevronLeft, ChevronRight, FileText, Clock, 
   Sparkles, CloudRain, Sun, Cloud, Moon, MapPin, Wind, Droplets, Sunrise, 
   Sunset, Flame, Play, Undo2, Lock, Unlock, Calendar, BookOpen, BarChart2, 
-  Repeat, Settings, Search, Shield, RefreshCw, Check
+  Repeat, Settings, Search, Shield, RefreshCw, Check, ArrowRight, Target, Compass
 } from 'lucide-react';
 import { getDateFromDayNum, formatDateReadable } from '../utils/dateHelper';
 
@@ -27,7 +27,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   
   const displayHours = is24Hour ? hours.toString().padStart(2, '0') : ((hours % 12) || 12).toString().padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
-  const timeString = `${displayHours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  const timeString = `${displayHours}:${minutes.toString().padStart(2, '0')}`;
 
   // 2. Live Weather state for Srikakulam, AP with caching & offline resilience
   const [weather, setWeather] = useState(() => {
@@ -86,7 +86,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           localStorage.setItem('gate2028_weather_cache', JSON.stringify(newW));
         }
       } catch (err) {
-        setWeather(prev => ({ ...prev, lastUpdated: 'Last synced earlier (offline)', isOffline: true }));
+        setWeather(prev => ({ ...prev, lastUpdated: 'Last synced earlier', isOffline: true }));
       }
     }
     fetchWeather();
@@ -94,37 +94,50 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     return () => clearInterval(interval);
   }, []);
 
-  // 3. Time-aware Greetings, Weather Atmosphere & Dynamic Motivations
+  // 3. Immersive Cinematic Atmospheric Themes based on IST Time & Weather
+  let environmentName = 'Night Sky';
   let greeting = '';
   let motivationMsg = '';
-  let WeatherIcon = CloudRain;
-  let weatherGradient = 'from-blue-600 via-indigo-700 to-slate-900';
+  let WeatherIcon = Moon;
+  let atmosphereBg = 'bg-[#060913] text-slate-100 border-white/10';
+  let heroGradient = 'from-slate-950 via-[#0B1021] to-[#121936]';
+  let accentGlow = 'bg-sky-500/10';
 
   if (hours >= 0 && hours < 5) {
+    environmentName = 'Brahmamuhurtha Calm';
     greeting = 'Good morning. The world is quiet. This is your time.';
-    motivationMsg = '“At 3 AM in Srikakulam, while silence rules the coast, your dedication builds your IIT dream. Open the first lecture. Do not think, just execute.”';
+    motivationMsg = '“At 3 AM in Srikakulam, while silence rules the coast, your dedication builds your IIT dream.”';
     WeatherIcon = Moon;
-    weatherGradient = 'from-slate-950 via-indigo-950 to-blue-950';
-  } else if (hours >= 5 && hours < 12) {
-    greeting = 'Good morning ☀️';
-    motivationMsg = '“Morning light over the Bay of Bengal. Your daily schedule is locked. Trust the plan, watch the lecture, master the concepts.”';
+    heroGradient = 'from-[#03050B] via-[#090D1C] to-[#111732]';
+    accentGlow = 'bg-indigo-500/10';
+  } else if (hours >= 5 && hours < 8) {
+    environmentName = 'Pre-Dawn Horizon';
+    greeting = 'Good morning. First light over Srikakulam.';
+    motivationMsg = '“The syllabus is fixed. The date is locked. Execute today’s plan with absolute calm.”';
+    WeatherIcon = Sunrise;
+    heroGradient = 'from-[#0B0F1F] via-[#151B35] to-[#252A50]';
+    accentGlow = 'bg-amber-500/10';
+  } else if (hours >= 8 && hours < 17) {
+    environmentName = 'Daylight Focus';
+    greeting = hours < 12 ? 'Good morning ☀️' : 'Good afternoon.';
+    motivationMsg = '“One lecture at a time. No subject switching. Trust the coaching schedule.”';
     WeatherIcon = Sun;
-    weatherGradient = 'from-sky-500 via-indigo-600 to-blue-700';
-  } else if (hours >= 12 && hours < 17) {
-    greeting = 'Good afternoon.';
-    motivationMsg = '“Midday focus. Do not get distracted by alternative resources or changing teachers. Execute today’s tasks with absolute rigor.”';
-    WeatherIcon = Cloud;
-    weatherGradient = 'from-blue-600 via-sky-600 to-indigo-800';
-  } else if (hours >= 17 && hours < 21) {
+    heroGradient = 'from-[#0F172A] via-[#1E293B] to-[#334155]';
+    accentGlow = 'bg-sky-500/10';
+  } else if (hours >= 17 && hours < 20) {
+    environmentName = 'Warm Sunset';
     greeting = 'Good evening.';
-    motivationMsg = '“As evening settles over Srikakulam, review your notes and solve practice sets. Consistency beats intensity every single time.”';
-    WeatherIcon = CloudRain;
-    weatherGradient = 'from-indigo-900 via-slate-900 to-blue-950';
+    motivationMsg = '“As evening settles over the coast, review your notes and lock in your practice sets.”';
+    WeatherIcon = Sunset;
+    heroGradient = 'from-[#1A1025] via-[#241638] to-[#3B225C]';
+    accentGlow = 'bg-orange-500/10';
   } else {
+    environmentName = 'Deep Night Cosmos';
     greeting = 'Good night.';
-    motivationMsg = '“Late night session. Wrap up pending tasks, record your progress, and prepare for tomorrow’s triumph.”';
+    motivationMsg = '“Today’s work is done. Sleep knowing you moved one step closer to GATE 2028.”';
     WeatherIcon = Moon;
-    weatherGradient = 'from-slate-900 via-indigo-950 to-slate-950';
+    heroGradient = 'from-[#05070E] via-[#0D1122] to-[#161D3A]';
+    accentGlow = 'bg-indigo-500/10';
   }
 
   // 4. Start Date & Day Calculation in IST
@@ -147,7 +160,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   const dayData = weekData ? weekData.days.find(d => d.dayNum === selectedDayNum) : null;
   const actualDate = getDateFromDayNum(selectedDayNum, startDateStr);
 
-  // 5. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80% or 100%)
+  // 5. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80%)
   const calculateRealStudyStreak = () => {
     let streak = 0;
     const checkDayLimit = Math.min(selectedDayNum, calculatedDayNum);
@@ -203,7 +216,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   };
 
   const handleNoteChange = (subIdx, text) => {
-    const key = `${selectedDayNum}_${subIdx}_note`;
+    const key = `${selectedDayNum}_${sIdx}_note`;
     setNotes({ ...notes, [key]: text });
   };
 
@@ -277,10 +290,10 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 animate-fadeIn">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans">
       {/* Undo Toast Notification */}
       {lastToggled && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 border border-slate-800 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3.5 border border-slate-800 animate-bounce">
           <span className="text-xs font-bold">Task updated</span>
           <button
             onClick={undoLastToggle}
@@ -292,127 +305,153 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         </div>
       )}
 
-      {/* Ultra Premium Live Srikakulam Weather & Clock Header Banner */}
-      <div className={`bg-gradient-to-r ${weatherGradient} rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-sky-500/10 relative overflow-hidden border border-white/10 transition-all duration-700`}>
-        <div className="absolute -right-10 -top-10 w-48 h-48 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+      {/* REIMAGINED CINEMATIC HERO COMPOSITION */}
+      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden border border-white/10 transition-all duration-1000`}>
+        {/* Ambient atmospheric lighting */}
+        <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[100px] pointer-events-none`} />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div className="space-y-3">
-            {/* Live Location & Weather Widget */}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Hero: Time, Environment & Greeting */}
+          <div className="lg:col-span-7 space-y-6">
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="bg-white/15 backdrop-blur-md text-white text-xs font-extrabold px-3 py-1 rounded-full flex items-center space-x-1.5 border border-white/20 shadow-inner">
+              <span className="bg-white/10 backdrop-blur-xl text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-white/15 shadow-sm">
                 <MapPin className="w-3.5 h-3.5 text-rose-400" />
                 <span>Srikakulam, AP</span>
               </span>
-              <span className="bg-white/15 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full flex items-center space-x-1.5 border border-white/25">
+              <span className="bg-white/10 backdrop-blur-xl text-white text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-white/15">
                 <WeatherIcon className="w-3.5 h-3.5 text-sky-300 animate-pulse" />
-                <span>{weather.condition} • {weather.temp}°C (Feels {weather.feelsLike}°)</span>
+                <span>{environmentName} • {weather.temp}°C</span>
               </span>
-              <span className="bg-amber-500/25 text-amber-200 text-xs font-black px-3 py-1 rounded-full border border-amber-500/30 flex items-center space-x-1">
+              <span className="bg-amber-500/20 text-amber-300 text-xs font-black px-3.5 py-1.5 rounded-full border border-amber-500/30 flex items-center space-x-1.5 shadow-sm">
                 <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                 <span>Streak: {currentStudyStreak} Days</span>
               </span>
             </div>
 
-            {/* Live IST Clock & Greeting */}
-            <div>
-              <div className="flex items-baseline space-x-3 mt-1">
-                <h2 className="text-3xl sm:text-4xl font-black tracking-tight font-mono text-white drop-shadow">
-                  {timeString} {ampm}
-                </h2>
-                <span className="text-[10px] font-black text-sky-200 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">
-                  IST (UTC+5:30)
+            <div className="space-y-2">
+              <div className="flex items-baseline space-x-3">
+                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-md">
+                  {timeString}
+                </h1>
+                <span className="text-xs font-black text-sky-200 uppercase tracking-widest bg-white/10 px-2.5 py-1 rounded-lg">
+                  {ampm} • IST
                 </span>
               </div>
-              <p className="text-base sm:text-lg font-extrabold text-white mt-2 drop-shadow-sm">
+              <p className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight">
                 {greeting}
               </p>
-              <p className="text-sky-100/90 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed italic">
+              <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed font-medium italic">
                 {motivationMsg}
               </p>
             </div>
+
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                onClick={() => {
+                  const newLock = !settings.lockToday;
+                  setSettings({ ...settings, lockToday: newLock });
+                }}
+                className={`px-5 py-3.5 rounded-2xl font-black text-xs flex items-center space-x-2 transition-all shadow-md ${
+                  settings.lockToday
+                    ? 'bg-rose-600 text-white'
+                    : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/15'
+                }`}
+              >
+                {settings.lockToday ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                <span>{settings.lockToday ? 'TODAY LOCKED' : 'LOCK TODAY'}</span>
+              </button>
+
+              <button
+                onClick={onStartFocus}
+                className="bg-white hover:bg-sky-50 text-slate-950 px-7 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl shadow-black/25 flex items-center space-x-2.5 transition-all transform hover:scale-105 active:scale-95"
+              >
+                <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span>START FOCUS MODE</span>
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2.5 w-full md:w-auto">
-            <button
-              onClick={() => {
-                const newLock = !settings.lockToday;
-                setSettings({ ...settings, lockToday: newLock });
-              }}
-              className={`px-4 py-3.5 rounded-2xl font-black text-xs flex items-center justify-center space-x-2 transition-all ${
-                settings.lockToday
-                  ? 'bg-rose-600 text-white shadow-lg'
-                  : 'bg-white/15 hover:bg-white/25 text-white backdrop-blur-md'
-              }`}
-            >
-              {settings.lockToday ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-              <span>{settings.lockToday ? 'TODAY LOCKED' : 'LOCK TODAY'}</span>
-            </button>
+          {/* Right Hero: Embedded Weather Card & Core Stats */}
+          <div className="lg:col-span-5 bg-white/10 backdrop-blur-2xl rounded-3xl p-6 border border-white/15 shadow-2xl space-y-5">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-sky-300">GATE 2028 COMMAND</p>
+                <h3 className="text-lg font-black mt-0.5">WEEK {currentWeekNum} • DAY {selectedDayNum}</h3>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center font-black text-xl text-sky-200 border border-white/20 shadow-inner">
+                {completionPercent}%
+              </div>
+            </div>
 
-            <button
-              onClick={onStartFocus}
-              className="bg-white hover:bg-sky-50 text-sky-950 px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl shadow-black/20 flex items-center justify-center space-x-2 transition-all transform hover:scale-105 active:scale-95"
-            >
-              <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span>START FOCUS MODE</span>
-            </button>
-          </div>
-        </div>
-      </div>
+            {/* Weather Breakdown */}
+            <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
+                <Droplets className="w-4 h-4 text-sky-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase">Humidity</p>
+                  <p className="text-sm font-black">{weather.humidity}%</p>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
+                <Wind className="w-4 h-4 text-indigo-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase">Wind</p>
+                  <p className="text-sm font-black">{weather.wind} km/h</p>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
+                <Sunrise className="w-4 h-4 text-amber-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase">Sunrise</p>
+                  <p className="text-sm font-black">{weather.sunrise}</p>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-3.5 border border-white/10 flex items-center space-x-3">
+                <Sunset className="w-4 h-4 text-orange-400 shrink-0" />
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase">Sunset</p>
+                  <p className="text-sm font-black">{weather.sunset}</p>
+                </div>
+              </div>
+            </div>
 
-      {/* Weather Detail Mini Card */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center space-x-3">
-          <Droplets className="w-5 h-5 text-sky-500" />
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Humidity</p>
-            <p className="text-sm font-black text-slate-800 dark:text-slate-100">{weather.humidity}%</p>
-          </div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center space-x-3">
-          <Wind className="w-5 h-5 text-indigo-500" />
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Wind</p>
-            <p className="text-sm font-black text-slate-800 dark:text-slate-100">{weather.wind} km/h</p>
-          </div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center space-x-3">
-          <Sunrise className="w-5 h-5 text-amber-500" />
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Sunrise</p>
-            <p className="text-sm font-black text-slate-800 dark:text-slate-100">{weather.sunrise}</p>
-          </div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center space-x-3">
-          <Sunset className="w-5 h-5 text-orange-500" />
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Sunset</p>
-            <p className="text-sm font-black text-slate-800 dark:text-slate-100">{weather.sunset}</p>
+            <div className="pt-1">
+              <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden p-0.5">
+                <div
+                  className="bg-gradient-to-r from-sky-400 to-indigo-300 h-full rounded-full transition-all duration-700"
+                  style={{ width: `${completionPercent}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-300 mt-2 uppercase tracking-wider">
+                <span>Today's Progress</span>
+                <span>{completedTasks} / {totalTasks} Tasks</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Date Navigator Header */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center justify-between transition-colors">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center justify-between transition-colors">
         <button
           onClick={() => setSelectedDayNum(prev => Math.max(1, prev - 1))}
-          className="flex items-center space-x-1 text-xs font-bold px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+          className="flex items-center space-x-1.5 text-xs font-bold px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
           <span className="hidden sm:inline">Previous Day</span>
         </button>
         <div className="text-center">
-          <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-2.5 py-0.5 rounded-md">
-            WEEK {currentWeekNum} • DAY {selectedDayNum} OF 189
+          <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3 py-1 rounded-full border border-sky-200 dark:border-sky-800">
+            DATE MAPPING ACTIVE
           </span>
-          <h3 className="font-extrabold text-sm sm:text-base mt-1 text-slate-800 dark:text-slate-100">
+          <h3 className="font-black text-base sm:text-lg mt-1 text-slate-900 dark:text-slate-100">
             {formatDateReadable(actualDate)}
           </h3>
         </div>
         <button
           onClick={() => setSelectedDayNum(prev => Math.min(189, prev + 1))}
-          className="flex items-center space-x-1 text-xs font-bold px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+          className="flex items-center space-x-1.5 text-xs font-bold px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
         >
           <span className="hidden sm:inline">Next Day</span>
           <ChevronRight className="w-4 h-4" />
@@ -421,49 +460,40 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
       {/* WHAT SHOULD I DO NOW? (Decision Fatigue Eliminator Card) */}
       {currentTaskObj ? (
-        <div className="bg-gradient-to-r from-sky-600 to-indigo-600 rounded-3xl p-6 sm:p-7 text-white shadow-xl shadow-sky-500/15 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="space-y-1">
-            <span className="bg-white/20 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest">
+        <div className="bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-sky-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10">
+          <div className="space-y-2">
+            <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-white/25">
               WHAT TO DO NOW • NO DECISION NEEDED
             </span>
-            <p className="text-xs text-sky-100 font-bold mt-2">{currentTaskObj.subject} • {currentTaskObj.module}</p>
-            <h3 className="text-xl sm:text-2xl font-black">{currentTaskObj.lecture}</h3>
-            <p className="text-xs text-sky-200">Current Task: <span className="font-bold underline">{currentTaskObj.taskName}</span></p>
+            <p className="text-xs text-sky-100 font-extrabold tracking-wide uppercase mt-1">{currentTaskObj.subject} • {currentTaskObj.module}</p>
+            <h3 className="text-2xl sm:text-3xl font-black tracking-tight">{currentTaskObj.lecture}</h3>
+            <p className="text-xs text-sky-200 font-medium">Current Action: <span className="font-bold underline text-white">{currentTaskObj.taskName}</span></p>
             {nextTaskObj && (
-              <p className="text-[11px] text-sky-200/80 mt-1">Next up: {nextTaskObj.lecture} ({nextTaskObj.taskName})</p>
+              <p className="text-[11px] text-sky-200/80">Next up: {nextTaskObj.lecture} ({nextTaskObj.taskName})</p>
             )}
           </div>
           <button
             onClick={() => toggleTask(currentTaskObj.sIdx, currentTaskObj.taskName)}
-            className="bg-white text-sky-600 hover:bg-sky-50 px-5 py-3 rounded-2xl font-black text-xs shadow-lg flex items-center space-x-2 transition-all transform hover:scale-105 shrink-0"
+            className="bg-white hover:bg-sky-50 text-sky-950 px-8 py-4 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 transition-all transform hover:scale-105 active:scale-95 shrink-0"
           >
-            <Play className="w-4 h-4 fill-sky-600" />
+            <Play className="w-4 h-4 fill-sky-950" />
             <span>MARK TASK DONE</span>
           </button>
         </div>
       ) : (
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-6 text-white shadow-xl text-center space-y-2">
-          <h3 className="text-2xl font-black">DAY COMPLETE ✅</h3>
-          <p className="text-xs text-emerald-100">All required academic tasks for Day {selectedDayNum} are successfully finished. Your streak is secure.</p>
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-8 text-white shadow-2xl text-center space-y-3">
+          <h3 className="text-3xl font-black">DAY COMPLETE ✅</h3>
+          <p className="text-xs sm:text-sm text-emerald-100 font-medium">All planned academic work for Day {selectedDayNum} is successfully executed. Your study streak is secure.</p>
         </div>
       )}
 
-      {/* Progress Bar */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors">
-        <div className="flex justify-between items-center mb-2 text-xs font-bold">
-          <span className="text-slate-500 dark:text-slate-400 uppercase tracking-wider">Today's Execution Progress</span>
-          <span className="text-sky-600 dark:text-sky-400 text-sm">{completionPercent}%</span>
-        </div>
-        <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden p-0.5">
-          <div
-            className="bg-gradient-to-r from-sky-500 via-indigo-600 to-purple-600 h-full transition-all duration-700 rounded-full shadow-sm"
-            style={{ width: `${completionPercent}%` }}
-          />
-        </div>
-      </div>
-
       {/* Today's Tasks Cards */}
-      <div className="space-y-4">
+      <div className="space-y-5">
+        <div className="flex items-center justify-between px-2">
+          <h4 className="text-sm font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Today's Executable Plan</h4>
+          <span className="text-xs font-black text-sky-600 dark:text-sky-400">{completedTasks} / {totalTasks} Complete</span>
+        </div>
+
         {dayData && dayData.subjects && dayData.subjects.length > 0 ? (
           dayData.subjects.map((sub, sIdx) => {
             const noteKey = `${selectedDayNum}_${sIdx}_note`;
@@ -472,22 +502,22 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             return (
               <div
                 key={sIdx}
-                className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 transition-all duration-300 hover:shadow-md"
+                className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
                   <div>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3 py-1 rounded-lg">
+                    <span className="text-xs font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50 px-3.5 py-1.5 rounded-xl border border-sky-200 dark:border-sky-800">
                       {sub.name}
                     </span>
-                    <h4 className="text-lg font-black mt-2 text-slate-900 dark:text-slate-100">
+                    <h4 className="text-xl font-black mt-3 text-slate-900 dark:text-slate-100">
                       {sub.lecture}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-bold">
                       Module: {sub.module}
                     </p>
                   </div>
                   {sub.duration && (
-                    <div className="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-extrabold self-start sm:self-auto border border-slate-200/60 dark:border-slate-700">
+                    <div className="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-2xl text-xs font-black self-start sm:self-auto border border-slate-200/60 dark:border-slate-700">
                       <Clock className="w-3.5 h-3.5 text-sky-500" />
                       <span>{sub.duration}</span>
                     </div>
@@ -495,9 +525,9 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                 </div>
 
                 {/* Tasks Checkboxes */}
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Required Execution Tasks</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {sub.tasks.map((task, tIdx) => {
                       const taskKey = `${selectedDayNum}_${sIdx}_${task}`;
                       const isChecked = !!progress[taskKey];
@@ -506,18 +536,18 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                         <div
                           key={tIdx}
                           onClick={() => toggleTask(sIdx, task)}
-                          className={`flex items-center space-x-3.5 p-3.5 rounded-2xl border cursor-pointer transition-all duration-300 ${
+                          className={`flex items-center space-x-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${
                             isChecked
-                              ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 shadow-sm'
+                              ? 'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-200 shadow-sm'
                               : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-700'
                           }`}
                         >
                           {isChecked ? (
-                            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                            <CheckCircle2 className="w-5.5 h-5.5 text-emerald-500 shrink-0" />
                           ) : (
-                            <Circle className="w-5 h-5 text-slate-400 shrink-0" />
+                            <Circle className="w-5.5 h-5.5 text-slate-400 shrink-0" />
                           )}
-                          <span className={`text-sm font-bold ${isChecked ? 'line-through opacity-75' : 'text-slate-700 dark:text-slate-200'}`}>
+                          <span className={`text-sm font-bold ${isChecked ? 'line-through opacity-75' : 'text-slate-800 dark:text-slate-200'}`}>
                             {task}
                           </span>
                         </div>
@@ -528,7 +558,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
                 {/* Personal Note for this Lecture */}
                 <div className="pt-2">
-                  <div className="flex items-center space-x-1.5 text-xs font-extrabold text-slate-400 mb-1.5">
+                  <div className="flex items-center space-x-1.5 text-xs font-black text-slate-400 mb-2">
                     <FileText className="w-3.5 h-3.5 text-indigo-500" />
                     <span>Quick Personal Note / Formula Doubt</span>
                   </div>
@@ -537,16 +567,16 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                     value={currentNote}
                     onChange={(e) => handleNoteChange(sIdx, e.target.value)}
                     placeholder="Add a short note or formula to remember for GATE..."
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-100"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
             );
           })
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200/80 dark:border-slate-800 shadow-sm">
-            <h4 className="text-lg font-extrabold text-slate-700 dark:text-slate-300">No Scheduled Lectures Today</h4>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <h4 className="text-lg font-black text-slate-700 dark:text-slate-300">No Scheduled Lectures Today</h4>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
               Reset day or buffer day. Use this time to revise previous concepts or solve GATE PYQs!
             </p>
           </div>
