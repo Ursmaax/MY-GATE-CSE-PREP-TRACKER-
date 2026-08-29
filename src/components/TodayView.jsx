@@ -113,7 +113,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   let greeting = '';
   let motivationMsg = '';
   let WeatherIcon = Moon;
-  let heroGradient = 'from-[#12071f]/90 via-[#1f0d3d]/90 to-[#0d0922]/90';
+  let heroGradient = 'from-[#12071f]/95 via-[#1f0d3d]/95 to-[#0d0922]/95';
   let accentGlow = 'bg-pink-500/20';
 
   if (hours >= 0 && hours < 5) {
@@ -128,21 +128,21 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     greeting = 'Good morning. First light over the garden.';
     motivationMsg = '“The path is clear. The schedule is locked. Execute today’s plan with absolute calm.”';
     WeatherIcon = Sunrise;
-    heroGradient = 'from-[#140824]/90 via-[#24103f]/90 to-[#12082b]/90';
+    heroGradient = 'from-[#140824]/95 via-[#24103f]/95 to-[#12082b]/95';
     accentGlow = 'bg-rose-500/20';
   } else if (hours >= 8 && hours < 17) {
     environmentName = 'Radiant Daylight';
     greeting = hours < 12 ? 'Good morning ☀️' : 'Good afternoon.';
     motivationMsg = '“One lecture at a time. No subject switching. Trust the coaching schedule, Maahi 💗.”';
     WeatherIcon = Sun;
-    heroGradient = 'from-[#100c24]/90 via-[#1c123d]/90 to-[#0f172a]/90';
+    heroGradient = 'from-[#100c24]/95 via-[#1c123d]/95 to-[#0f172a]/95';
     accentGlow = 'bg-pink-500/20';
   } else if (hours >= 17 && hours < 20) {
     environmentName = 'Twilight Dusk';
     greeting = 'Good evening.';
     motivationMsg = '“As twilight settles, review your notes and lock in your practice sets with confidence.”';
     WeatherIcon = Sunset;
-    heroGradient = 'from-[#1f092b]/90 via-[#33114a]/90 to-[#140826]/90';
+    heroGradient = 'from-[#1f092b]/95 via-[#33114a]/95 to-[#140826]/95';
     accentGlow = 'bg-pink-500/25';
   } else {
     environmentName = 'Deep Dreamland Cosmos';
@@ -292,8 +292,8 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         </div>
       )}
 
-      {/* LIQUID GLASS CINEMATIC HERO COMPOSITION */}
-      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-[0_20px_60px_rgba(18,7,31,0.6)] relative overflow-hidden border border-pink-500/20 backdrop-blur-2xl transition-all duration-1000 z-10`}>
+      {/* PERFECTED LIQUID GLASS CINEMATIC HERO COMPOSITION */}
+      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-6 sm:p-10 text-white shadow-[0_20px_60px_rgba(18,7,31,0.6)] relative overflow-hidden border border-pink-500/20 backdrop-blur-2xl transition-all duration-1000 z-10`}>
         {/* Ambient atmospheric glowing starlight */}
         <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[130px] pointer-events-none`} />
         <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-[130px] pointer-events-none" />
@@ -359,46 +359,46 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             </div>
           </div>
 
-          {/* Right Hero: Liquid Glass Weather Card & Core Stats */}
-          <div className="lg:col-span-5 bg-white/5 backdrop-blur-2xl rounded-3xl p-6 border border-pink-500/20 shadow-2xl space-y-5">
-            <div className="flex justify-between items-center border-b border-pink-500/20 pb-4">
+          {/* Right Hero: Perfectly Aligned Liquid Glass Weather Card & Core Stats */}
+          <div className="lg:col-span-5 bg-white/5 backdrop-blur-2xl rounded-3xl p-6 border border-pink-500/20 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center border-b border-pink-500/20 pb-3">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-pink-300">Maahi 💗 Dreamland</p>
-                <h3 className="text-lg font-black mt-0.5 text-white">WEEK {currentWeekNum} • DAY {selectedDayNum}</h3>
+                <h3 className="text-base font-black mt-0.5 text-white">WEEK {currentWeekNum} • DAY {selectedDayNum}</h3>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center font-black text-xl text-white border border-pink-400/40 shadow-md">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center font-black text-lg text-white border border-pink-400/40 shadow-md shrink-0">
                 {completionPercent}%
               </div>
             </div>
 
-            {/* Weather Breakdown */}
-            <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
+            {/* Weather Breakdown (2x2 Grid with explicit equal sizing) */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <div className="bg-white/5 rounded-2xl p-3 border border-pink-500/15 flex items-center space-x-2.5">
                 <Droplets className="w-4 h-4 text-pink-400 shrink-0" />
-                <div>
-                  <p className="text-[10px] text-pink-200/60 uppercase">Humidity</p>
-                  <p className="text-sm font-black text-white">{weather.humidity}%</p>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold text-pink-200/60 uppercase truncate">Humidity</p>
+                  <p className="text-xs font-black text-white">{weather.humidity}%</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
+              <div className="bg-white/5 rounded-2xl p-3 border border-pink-500/15 flex items-center space-x-2.5">
                 <Wind className="w-4 h-4 text-purple-400 shrink-0" />
-                <div>
-                  <p className="text-[10px] text-pink-200/60 uppercase">Wind</p>
-                  <p className="text-sm font-black text-white">{weather.wind} km/h</p>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold text-pink-200/60 uppercase truncate">Wind</p>
+                  <p className="text-xs font-black text-white">{weather.wind} km/h</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
+              <div className="bg-white/5 rounded-2xl p-3 border border-pink-500/15 flex items-center space-x-2.5">
                 <Sunrise className="w-4 h-4 text-amber-400 shrink-0" />
-                <div>
-                  <p className="text-[10px] text-pink-200/60 uppercase">Sunrise</p>
-                  <p className="text-sm font-black text-white">{weather.sunrise}</p>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold text-pink-200/60 uppercase truncate">Sunrise</p>
+                  <p className="text-xs font-black text-white">{weather.sunrise}</p>
                 </div>
               </div>
-              <div className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/15 flex items-center space-x-3">
+              <div className="bg-white/5 rounded-2xl p-3 border border-pink-500/15 flex items-center space-x-2.5">
                 <Sunset className="w-4 h-4 text-orange-400 shrink-0" />
-                <div>
-                  <p className="text-[10px] text-pink-200/60 uppercase">Sunset</p>
-                  <p className="text-sm font-black text-white">{weather.sunset}</p>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold text-pink-200/60 uppercase truncate">Sunset</p>
+                  <p className="text-xs font-black text-white">{weather.sunset}</p>
                 </div>
               </div>
             </div>
