@@ -227,7 +227,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   };
 
   const handleNoteChange = (subIdx, text) => {
-    const key = `${selectedDayNum}_${sIdx}_note`;
+    const key = `${selectedDayNum}_${subIdx}_note`;
     setNotes({ ...notes, [key]: text });
   };
 
@@ -269,7 +269,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8 animate-fadeIn font-sans relative">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fadeIn font-sans relative">
       {/* Floating Magic Blossoms Background Atmosphere */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-12 left-10 w-2.5 h-2.5 bg-pink-400/40 rounded-full blur-[1px] animate-pulse" />
@@ -293,7 +293,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
       )}
 
       {/* PERFECTED LIQUID GLASS CINEMATIC HERO COMPOSITION */}
-      <div className={`bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-6 sm:p-10 text-white shadow-[0_20px_60px_rgba(18,7,31,0.6)] relative overflow-hidden border border-pink-500/20 backdrop-blur-2xl transition-all duration-1000 z-10`}>
+      <div className={`w-full bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-6 sm:p-10 text-white shadow-[0_20px_60px_rgba(18,7,31,0.6)] relative overflow-hidden border border-pink-500/20 backdrop-blur-2xl transition-all duration-1000 z-10 box-border`}>
         {/* Ambient atmospheric glowing starlight */}
         <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[130px] pointer-events-none`} />
         <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-[130px] pointer-events-none" />
@@ -420,7 +420,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
       </div>
 
       {/* Date Navigator Header */}
-      <div className="bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl p-5 border border-pink-500/20 shadow-sm flex items-center justify-between transition-colors z-10 relative">
+      <div className="w-full bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl p-5 border border-pink-500/20 shadow-sm flex items-center justify-between transition-colors z-10 relative box-border">
         <button
           onClick={() => setSelectedDayNum(prev => Math.max(1, prev - 1))}
           className="flex items-center space-x-1.5 text-xs font-bold px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
@@ -447,7 +447,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
 
       {/* WHAT SHOULD I DO NOW? (Decision Fatigue Eliminator Card) */}
       {currentTaskObj ? (
-        <div className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-pink-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10 z-10 relative">
+        <div className="w-full bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-pink-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border border-white/10 z-10 relative box-border">
           <div className="space-y-2">
             <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-white/25">
               WHAT TO DO NOW • NO DECISION NEEDED
@@ -468,14 +468,14 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           </button>
         </div>
       ) : (
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-8 text-white shadow-2xl text-center space-y-3 z-10 relative">
+        <div className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-8 text-white shadow-2xl text-center space-y-3 z-10 relative box-border">
           <h3 className="text-3xl font-black">DAY COMPLETE ✅</h3>
           <p className="text-xs sm:text-sm text-emerald-100 font-medium">All planned academic work for Day {selectedDayNum} is successfully executed, Maahi 💗. Your study streak is secure.</p>
         </div>
       )}
 
       {/* Today's Tasks Cards */}
-      <div className="space-y-5 z-10 relative">
+      <div className="w-full space-y-5 z-10 relative">
         <div className="flex items-center justify-between px-2">
           <h4 className="text-sm font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Today's Executable Plan</h4>
           <span className="text-xs font-black text-pink-600 dark:text-pink-400">{completedTasks} / {totalTasks} Complete</span>
@@ -489,7 +489,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             return (
               <div
                 key={sIdx}
-                className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-6 sm:p-8 border border-pink-500/15 dark:border-pink-500/10 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md"
+                className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-6 sm:p-8 border border-pink-500/15 dark:border-pink-500/10 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md box-border"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
                   <div>
@@ -561,7 +561,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             );
           })
         ) : (
-          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
+          <div className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
             <h4 className="text-lg font-black text-slate-700 dark:text-slate-300">No Scheduled Lectures Today</h4>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
               Reset day or buffer day. Use this time to revise previous concepts or solve GATE PYQs!
