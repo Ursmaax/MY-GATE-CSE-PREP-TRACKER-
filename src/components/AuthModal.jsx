@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Mail, Lock, User, LogIn, Cloud, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
+import { Shield, Mail, Lock, User, LogIn, Cloud, CheckCircle2, AlertCircle, X, Sparkles, Globe } from 'lucide-react';
 import { getSupabaseClient, getSupabaseCredentials, saveSupabaseCredentials } from '../utils/supabaseClient';
 
 export default function AuthModal({ isOpen, onClose, user, setUser }) {
@@ -35,7 +35,7 @@ export default function AuthModal({ isOpen, onClose, user, setUser }) {
 
     const client = getSupabaseClient();
     if (!client) {
-      setError('Please configure Supabase URL and Anon Key below first, or continue in Local Mode.');
+      setError('Please configure Supabase URL and Anon Key below first.');
       setLoading(false);
       setShowConfig(true);
       return;
@@ -57,16 +57,13 @@ export default function AuthModal({ isOpen, onClose, user, setUser }) {
         });
         if (error) throw error;
         if (data && data.user) {
-          setUser({
+          const loggedUser = {
             id: data.user.id,
             email: data.user.email,
             name: data.user.user_metadata?.full_name || name
-          });
-          localStorage.setItem('gate2028_cloud_user', JSON.stringify({
-            id: data.user.id,
-            email: data.user.email,
-            name: data.user.user_metadata?.full_name || name
-          }));
+          };
+          setUser(loggedUser);
+          localStorage.setItem('gate2028_cloud_user', JSON.stringify(loggedUser));
           onClose();
         }
       }
@@ -74,6 +71,27 @@ export default function AuthModal({ isOpen, onClose, user, setUser }) {
       setError(err.message || 'Authentication failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    const client = getSupabaseClient();
+    if (!client) {
+      setError('Please configure Supabase credentials below first.');
+      setShowConfig(true);
+      return;
+    }
+    try {
+      const { data, error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message || 'Google Sign-In failed');
     }
   };
 
@@ -95,7 +113,7 @@ export default function AuthModal({ isOpen, onClose, user, setUser }) {
           </div>
           <h3 className="text-2xl font-black text-white">GATE 2028 Cloud Sync</h3>
           <p className="text-xs text-pink-200/70 font-medium">
-            Sign in or connect Supabase to sync your Maahi 💗 progress across all devices for years.
+            Sign in with Google or Email to sync your Maahi 💗 progress across devices for years.
           </p>
         </div>
 
@@ -114,86 +132,108 @@ export default function AuthModal({ isOpen, onClose, user, setUser }) {
         )}
 
         {!showConfig ? (
-          <form onSubmit={handleAuth} className="space-y-4">
-            {isSignUp && (
+          <div className="space-y-4">
+            {/* Google Direct Sign In Button */}
+            <button
+              onClick={handleGoogleSignIn}
+              className="w-full bg-white hover:bg-slate-100 text-slate-900 font-black py-3.5 rounded-2xl text-sm shadow-lg flex items-center justify-center space-x-3 transition-all transform hover:scale-[1.02]"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.31 7.22 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.13 0 9.87 0 12s.43 3.87 1.18 5.4l4.09-3.16z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.17 2.69 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <div className="flex items-center my-4">
+              <div className="flex-1 border-t border-pink-500/20"></div>
+              <span className="px-3 text-[10px] font-black uppercase text-pink-300 tracking-wider">Or with Email</span>
+              <div className="flex-1 border-t border-pink-500/20"></div>
+            </div>
+
+            <form onSubmit={handleAuth} className="space-y-4">
+              {isSignUp && (
+                <div>
+                  <label className="text-[10px] font-black uppercase text-pink-300 tracking-wider block mb-1.5">Your Name</label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-3.5 w-4 h-4 text-pink-400" />
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Maahi 💗"
+                      required
+                      className="w-full bg-white/5 border border-pink-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="text-[10px] font-black uppercase text-pink-300 tracking-wider block mb-1.5">Your Name</label>
+                <label className="text-[10px] font-black uppercase text-pink-300 tracking-wider block mb-1.5">Email Address</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-3.5 w-4 h-4 text-pink-400" />
+                  <Mail className="absolute left-4 top-3.5 w-4 h-4 text-pink-400" />
                   <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Maahi 💗"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="maahi@gate2028.live"
                     required
                     className="w-full bg-white/5 border border-pink-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
                   />
                 </div>
               </div>
-            )}
 
-            <div>
-              <label className="text-[10px] font-black uppercase text-pink-300 tracking-wider block mb-1.5">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-3.5 w-4 h-4 text-pink-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="maahi@gate2028.live"
-                  required
-                  className="w-full bg-white/5 border border-pink-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
-                />
+              <div>
+                <label className="text-[10px] font-black uppercase text-pink-300 tracking-wider block mb-1.5">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-3.5 w-4 h-4 text-pink-400" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full bg-white/5 border border-pink-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="text-[10px] font-black uppercase text-pink-300 tracking-wider block mb-1.5">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-3.5 w-4 h-4 text-pink-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full bg-white/5 border border-pink-500/25 rounded-2xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40"
-                />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white font-black py-3.5 rounded-2xl text-sm shadow-lg shadow-pink-500/30 flex items-center justify-center space-x-2 transition-all transform hover:scale-[1.02]"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>{loading ? 'Processing...' : (isSignUp ? 'Create Cloud Account' : 'Sign In with Email')}</span>
+              </button>
+
+              <div className="flex justify-between items-center pt-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  className="text-pink-300 hover:underline font-bold"
+                >
+                  {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowConfig(true)}
+                  className="text-purple-300 hover:underline font-bold flex items-center space-x-1"
+                >
+                  <Cloud className="w-3.5 h-3.5" />
+                  <span>Configure Supabase</span>
+                </button>
               </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white font-black py-3.5 rounded-2xl text-sm shadow-lg shadow-pink-500/30 flex items-center justify-center space-x-2 transition-all transform hover:scale-[1.02]"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>{loading ? 'Processing...' : (isSignUp ? 'Create Cloud Account' : 'Sign In to Cloud Sync')}</span>
-            </button>
-
-            <div className="flex justify-between items-center pt-2 text-xs">
-              <button
-                type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-pink-300 hover:underline font-bold"
-              >
-                {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowConfig(true)}
-                className="text-purple-300 hover:underline font-bold flex items-center space-x-1"
-              >
-                <Cloud className="w-3.5 h-3.5" />
-                <span>Configure Supabase</span>
-              </button>
-            </div>
-          </form>
+            </form>
+          </div>
         ) : (
           <form onSubmit={handleSaveConfig} className="space-y-4">
             <h4 className="font-black text-sm text-pink-300">Supabase Connection Setup</h4>
             <p className="text-xs text-pink-200/70">
-              Enter your free Supabase Project URL and Anon API Key to enable cloud persistence.
+              Enter your free Supabase Project URL and Anon API Key to enable Google Auth & cloud persistence.
             </p>
 
             <div>

@@ -64,8 +64,36 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
             })}
           </nav>
 
-          {/* Right Action buttons */}
+          {/* Right Action buttons - Perfectly aligned without overlapping */}
           <div className="flex items-center space-x-2 shrink-0">
+            {/* Search Button */}
+            <button
+              onClick={onOpenSearch}
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200/80 hover:text-white border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all shadow-sm"
+              title="Global Search"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
+            {/* Focus Mode Button with clean Zap symbol */}
+            <button
+              onClick={onToggleFocus}
+              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/35 hover:to-orange-500/35 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border border-amber-500/30 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]"
+              title="Focus Mode"
+            >
+              <Zap className="w-4 h-4 text-amber-400 fill-amber-400 animate-bounce shrink-0" />
+              <span className="hidden xl:inline">Focus</span>
+            </button>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200 border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all text-sm"
+              title="Toggle Theme"
+            >
+              {darkMode ? '🌙' : '☀️'}
+            </button>
+
             {/* Sign In / User Profile Button */}
             {user ? (
               <div className="hidden sm:flex items-center space-x-2 bg-pink-500/25 border border-pink-500/40 px-3 py-2 rounded-xl text-xs font-black text-pink-200">
@@ -78,35 +106,13 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:opacity-95 text-white px-3.5 py-2 rounded-xl text-xs font-black shadow-lg shadow-pink-500/30 border border-pink-400/30 transition-all"
+                className="flex items-center space-x-1.5 bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white px-3.5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-pink-500/30 border border-pink-400/30 transition-all"
               >
                 <User className="w-3.5 h-3.5" />
                 <span>Sign In</span>
               </button>
             )}
 
-            <button
-              onClick={onOpenSearch}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200/80 hover:text-white border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all shadow-sm"
-              title="Global Search"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onToggleFocus}
-              className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/35 hover:to-orange-500/35 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border border-amber-500/30 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-              title="Focus Mode"
-            >
-              <Zap className="w-4 h-4 text-amber-400 fill-amber-400 animate-bounce shrink-0" />
-              <span className="hidden xl:inline">Focus Mode</span>
-            </button>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200 border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all text-sm"
-              title="Toggle Theme"
-            >
-              {darkMode ? '🌙' : '☀️'}
-            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2.5 rounded-xl bg-white/5 text-pink-200 border border-white/10"
