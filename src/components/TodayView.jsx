@@ -475,10 +475,10 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
       )}
 
       {/* Today's Tasks Cards */}
-      <div className="w-full space-y-5 z-10 relative">
+      <div className="w-full space-y-6 z-10 relative">
         <div className="flex items-center justify-between px-2">
-          <h4 className="text-sm font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Today's Executable Plan</h4>
-          <span className="text-xs font-black text-pink-600 dark:text-pink-400">{completedTasks} / {totalTasks} Complete</span>
+          <h4 className="text-sm font-black uppercase tracking-wider text-pink-400">Today's Executable Plan</h4>
+          <span className="text-xs font-black text-pink-300 bg-pink-500/10 px-3 py-1 rounded-full border border-pink-500/20">{completedTasks} / {totalTasks} Complete</span>
         </div>
 
         {dayData && dayData.subjects && dayData.subjects.length > 0 ? (
@@ -489,32 +489,35 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
             return (
               <div
                 key={sIdx}
-                className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-6 sm:p-8 border border-pink-500/15 dark:border-pink-500/10 shadow-sm space-y-5 transition-all duration-300 hover:shadow-md box-border"
+                className="w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-6 sm:p-8 border border-pink-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] space-y-6 transition-all duration-300 hover:border-pink-500/40 hover:shadow-[0_15px_40px_rgba(236,72,153,0.15)] box-border relative overflow-hidden group"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
-                  <div>
-                    <span className="text-xs font-black uppercase tracking-wider text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/50 px-3.5 py-1.5 rounded-xl border border-pink-200 dark:border-pink-800">
-                      {sub.name}
+                {/* Subtle ambient card glow */}
+                <div className="absolute -right-16 -top-16 w-48 h-48 bg-pink-500/10 rounded-full blur-[60px] pointer-events-none group-hover:bg-pink-500/20 transition-all duration-500" />
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-pink-500/15 pb-5 relative z-10">
+                  <div className="space-y-2">
+                    <span className="text-xs font-black uppercase tracking-widest text-pink-300 bg-gradient-to-r from-pink-500/20 to-purple-500/20 px-4 py-1.5 rounded-xl border border-pink-500/30 shadow-sm inline-block">
+                      ✨ {sub.name}
                     </span>
-                    <h4 className="text-xl font-black mt-3 text-slate-900 dark:text-slate-100">
+                    <h4 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                       {sub.lecture}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-bold">
-                      Module: {sub.module}
+                    <p className="text-xs text-pink-200/70 font-semibold">
+                      Module: <span className="text-pink-300 font-bold">{sub.module}</span>
                     </p>
                   </div>
                   {sub.duration && (
-                    <div className="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-2xl text-xs font-black self-start sm:self-auto border border-slate-200/60 dark:border-slate-700">
-                      <Clock className="w-3.5 h-3.5 text-pink-500" />
+                    <div className="flex items-center space-x-2 bg-white/5 text-pink-200 px-4 py-2.5 rounded-2xl text-xs font-black self-start sm:self-auto border border-pink-500/20 backdrop-blur-md shadow-inner">
+                      <Clock className="w-4 h-4 text-pink-400" />
                       <span>{sub.duration}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Tasks Checkboxes */}
-                <div className="space-y-3">
-                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Required Execution Tasks</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Tasks Checkboxes - Gorgeous Interactive Glass Cards */}
+                <div className="space-y-3 relative z-10">
+                  <p className="text-[11px] font-black text-pink-300/80 uppercase tracking-widest">Required Execution Tasks</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {sub.tasks.map((task, tIdx) => {
                       const taskKey = `${selectedDayNum}_${sIdx}_${task}`;
                       const isChecked = !!progress[taskKey];
@@ -523,18 +526,18 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                         <div
                           key={tIdx}
                           onClick={() => toggleTask(sIdx, task)}
-                          className={`flex items-center space-x-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${
+                          className={`flex items-center space-x-4 p-4.5 rounded-2xl border cursor-pointer transition-all duration-300 ${
                             isChecked
-                              ? 'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-200 shadow-sm'
-                              : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-pink-300 dark:hover:border-pink-700'
+                              ? 'bg-gradient-to-r from-emerald-950/60 to-teal-950/60 border-emerald-500/40 text-emerald-200 shadow-[0_0_15px_rgba(16,185,129,0.15)] scale-[1.01]'
+                              : 'bg-white/5 hover:bg-white/10 border-pink-500/20 hover:border-pink-500/40 text-pink-100 shadow-sm'
                           }`}
                         >
                           {isChecked ? (
-                            <CheckCircle2 className="w-5.5 h-5.5 text-emerald-500 shrink-0" />
+                            <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0 drop-shadow" />
                           ) : (
-                            <Circle className="w-5.5 h-5.5 text-slate-400 shrink-0" />
+                            <Circle className="w-6 h-6 text-pink-400/60 shrink-0" />
                           )}
-                          <span className={`text-sm font-bold ${isChecked ? 'line-through opacity-75' : 'text-slate-800 dark:text-slate-200'}`}>
+                          <span className={`text-sm font-bold tracking-wide ${isChecked ? 'line-through opacity-80 text-emerald-300' : 'text-white'}`}>
                             {task}
                           </span>
                         </div>
@@ -544,9 +547,9 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                 </div>
 
                 {/* Personal Note for this Lecture */}
-                <div className="pt-2">
-                  <div className="flex items-center space-x-1.5 text-xs font-black text-slate-400 mb-2">
-                    <FileText className="w-3.5 h-3.5 text-pink-500" />
+                <div className="pt-2 relative z-10">
+                  <div className="flex items-center space-x-2 text-xs font-black text-pink-300 mb-2.5">
+                    <FileText className="w-4 h-4 text-pink-400" />
                     <span>Quick Personal Note / Formula Doubt</span>
                   </div>
                   <input
@@ -554,16 +557,16 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
                     value={currentNote}
                     onChange={(e) => handleNoteChange(sIdx, e.target.value)}
                     placeholder="Add a short note or formula to remember for GATE..."
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-900 dark:text-slate-100"
+                    className="w-full bg-white/5 border border-pink-500/25 rounded-2xl px-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder-pink-300/40 backdrop-blur-md shadow-inner transition-all"
                   />
                 </div>
               </div>
             );
           })
         ) : (
-          <div className="w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
-            <h4 className="text-lg font-black text-slate-700 dark:text-slate-300">No Scheduled Lectures Today</h4>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          <div className="w-full bg-white/5 backdrop-blur-xl rounded-[2rem] p-12 text-center border border-pink-500/20 shadow-sm">
+            <h4 className="text-lg font-black text-white">No Scheduled Lectures Today</h4>
+            <p className="text-sm text-pink-200/70 mt-1 font-medium">
               Reset day or buffer day. Use this time to revise previous concepts or solve GATE PYQs!
             </p>
           </div>
