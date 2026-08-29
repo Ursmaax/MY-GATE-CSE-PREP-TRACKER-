@@ -11,6 +11,7 @@ import RevisionView from './components/RevisionView';
 import SettingsView from './components/SettingsView';
 import FocusMode from './components/FocusMode';
 import SearchModal from './components/SearchModal';
+import AuthModal from './components/AuthModal';
 import { initialScheduleData } from './data/scheduleData';
 import { loadSettings, saveSettings, loadProgress, saveProgress, loadNotes, saveNotes, loadRevisions, loadQuizzes, loadTests } from './utils/storage';
 
@@ -21,6 +22,14 @@ export default function App() {
   const [notes, setNotes] = useState(() => loadNotes());
   const [focusModeOpen, setFocusModeOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('gate2028_cloud_user');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e) {}
+    }
+    return null;
+  });
   const [darkMode, setDarkMode] = useState(settings.darkMode);
 
   useEffect(() => {
@@ -43,6 +52,11 @@ export default function App() {
     }
   }, [darkMode]);
 
+  const handleSignOut = () => {
+    setUser(null);
+    localStorage.removeItem('gate2028_cloud_user');
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-pink-500 selection:text-white">
       {/* Top Navbar */}
@@ -53,6 +67,9 @@ export default function App() {
         onToggleFocus={() => setFocusModeOpen(true)}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
+        user={user}
+        onOpenAuth={() => setAuthModalOpen(true)}
+        onSignOut={handleSignOut}
       />
 
       {/* Main Content Area */}
@@ -132,6 +149,16 @@ export default function App() {
           scheduleData={initialScheduleData}
           onClose={() => setSearchOpen(false)}
           setActiveTab={setActiveTab}
+        />
+      )}
+
+      {/* Auth Modal */}
+      {authModalOpen && (
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          user={user}
+          setUser={setUser}
         />
       )}
     </div>

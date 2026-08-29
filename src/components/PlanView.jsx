@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, CheckCircle2, Clock, ChevronRight, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, CheckCircle2, Clock, ChevronRight, Sparkles, BookOpen, Layers } from 'lucide-react';
 import { getDateFromDayNum, formatDateReadable } from '../utils/dateHelper';
 
 export default function PlanView({ scheduleData, settings, progress, setActiveTab }) {
@@ -17,7 +17,7 @@ export default function PlanView({ scheduleData, settings, progress, setActiveTa
           </span>
           <h2 className="text-2xl sm:text-3xl font-black mt-3 tracking-tight text-white">Week-by-Week Execution View</h2>
           <p className="text-sm text-pink-200/70 mt-1 font-medium">
-            Select a week to review its 7-day exact sequence mapped from your start date ({settings.startDate}).
+            Select a week to review its 7-day detailed curriculum mapped from your start date ({settings.startDate}).
           </p>
         </div>
 
@@ -38,8 +38,8 @@ export default function PlanView({ scheduleData, settings, progress, setActiveTa
         </div>
       </div>
 
-      {/* Week Days Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+      {/* Week Days Expanded List (Giving full breathing room instead of narrow cramped columns) */}
+      <div className="space-y-6">
         {weekData.days.map((day) => {
           const actualDate = getDateFromDayNum(day.dayNum, settings.startDate);
           
@@ -66,39 +66,74 @@ export default function PlanView({ scheduleData, settings, progress, setActiveTa
             badgeColor = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
           }
 
+          const completionPct = dayTotal > 0 ? Math.round((dayComp / dayTotal) * 100) : 0;
+
           return (
             <div
               key={day.dayNum}
-              className={`rounded-3xl p-5 border backdrop-blur-2xl shadow-xl flex flex-col justify-between space-y-4 transition-all duration-300 hover:scale-[1.02] hover:border-pink-500/50 ${statusColor}`}
+              className={`w-full rounded-[2.2rem] p-6 sm:p-8 border backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 transition-all duration-300 hover:border-pink-500/40 ${statusColor}`}
             >
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-xs font-black text-pink-300">Day {day.dayNum}</span>
-                  <span className={`text-[10px] font-black px-2.5 py-1 rounded-xl ${badgeColor}`}>
+              {/* Left Day Info */}
+              <div className="space-y-2 lg:w-1/4">
+                <div className="flex items-center space-x-3">
+                  <span className="text-xs font-black bg-pink-500/20 text-pink-300 px-3 py-1 rounded-xl border border-pink-500/30">
+                    Day {day.dayNum}
+                  </span>
+                  <span className={`text-[10px] font-black px-3 py-1 rounded-xl ${badgeColor}`}>
                     {statusText}
                   </span>
                 </div>
-                <h4 className="font-black text-base text-white">{day.dayOfWeek}</h4>
-                <p className="text-xs text-pink-200/70 font-medium">{day.date}</p>
-
-                <div className="mt-4 space-y-2.5">
-                  {day.subjects.map((sub, sIdx) => (
-                    <div key={sIdx} className="text-xs bg-white/5 p-3 rounded-2xl border border-pink-500/15">
-                      <p className="font-bold text-white truncate">{sub.name}</p>
-                      <p className="text-pink-200/70 truncate font-medium text-[11px]">{sub.lecture}</p>
-                    </div>
-                  ))}
+                <h3 className="font-black text-2xl text-white">{day.dayOfWeek}</h3>
+                <p className="text-xs text-pink-200/70 font-bold">{day.date} • {formatDateReadable(actualDate)}</p>
+                
+                <div className="pt-2">
+                  <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden border border-pink-500/20">
+                    <div className="bg-gradient-to-r from-pink-500 to-indigo-500 h-full rounded-full transition-all duration-500" style={{ width: `${completionPct}%` }} />
+                  </div>
+                  <p className="text-[11px] text-pink-200/70 font-black mt-1.5">{dayComp} / {dayTotal} tasks completed ({completionPct}%)</p>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-pink-500/15 flex items-center justify-between text-xs font-bold text-pink-200/80">
-                <span>{dayComp} / {dayTotal} tasks</span>
+              {/* Middle Subjects / Lectures Expanded Details */}
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                {day.subjects.map((sub, sIdx) => (
+                  <div key={sIdx} className="bg-white/5 p-4 rounded-2xl border border-pink-500/15 space-y-1.5 backdrop-blur-md">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-pink-300 tracking-wider bg-pink-500/15 px-2.5 py-0.5 rounded border border-pink-500/25">
+                        {sub.name}
+                      </span>
+                      {sub.duration && (
+                        <span className="text-[11px] font-black text-pink-200/80 flex items-center space-x-1">
+                          <Clock className="w-3 h-3 text-pink-400" />
+                          <span>{sub.duration}</span>
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="font-black text-base text-white mt-1">{sub.lecture}</h4>
+                    <p className="text-xs text-pink-200/70 font-medium">Module: {sub.module}</p>
+                    <div className="pt-2 flex flex-wrap gap-1.5">
+                      {sub.tasks.map((task, tIdx) => {
+                        const taskKey = `${day.dayNum}_${sIdx}_${task}`;
+                        const isDone = !!progress[taskKey];
+                        return (
+                          <span key={tIdx} className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border ${isDone ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300 line-through' : 'bg-white/5 border-white/10 text-pink-100/70'}`}>
+                            {task}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Action */}
+              <div className="shrink-0">
                 <button
                   onClick={() => setActiveTab('today')}
-                  className="text-pink-400 hover:text-white hover:underline flex items-center space-x-1 font-black"
+                  className="bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:opacity-95 text-white font-black px-6 py-3.5 rounded-2xl text-xs shadow-lg shadow-pink-500/30 flex items-center space-x-2 transition-all transform hover:scale-105"
                 >
-                  <span>View</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <span>Execute Day</span>
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>

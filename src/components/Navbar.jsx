@@ -1,7 +1,7 @@
 import React from 'react';
-import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles, Award, FileSpreadsheet } from 'lucide-react';
+import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles, Award, FileSpreadsheet, User, LogOut } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggleFocus, darkMode, setDarkMode }) {
+export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggleFocus, darkMode, setDarkMode, user, onOpenAuth, onSignOut }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const navItems = [
@@ -34,7 +34,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                   GATE 2028 DREAMLAND
                 </span>
                 <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-300 border border-pink-500/30 shrink-0">
-                  Maahi 💗
+                  {user ? user.name : 'Maahi 💗'}
                 </span>
               </div>
               <p className="text-[10px] text-pink-200/70 font-medium tracking-wide truncate">Magical Study Command Center</p>
@@ -66,6 +66,25 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
 
           {/* Right Action buttons */}
           <div className="flex items-center space-x-2 shrink-0">
+            {/* Sign In / User Profile Button */}
+            {user ? (
+              <div className="hidden sm:flex items-center space-x-2 bg-pink-500/25 border border-pink-500/40 px-3 py-2 rounded-xl text-xs font-black text-pink-200">
+                <User className="w-3.5 h-3.5 text-pink-300" />
+                <span className="truncate max-w-[100px]">{user.name}</span>
+                <button onClick={onSignOut} title="Sign Out" className="hover:text-white ml-1">
+                  <LogOut className="w-3.5 h-3.5 text-rose-300" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuth}
+                className="hidden sm:flex items-center space-x-1.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:opacity-95 text-white px-3.5 py-2 rounded-xl text-xs font-black shadow-lg shadow-pink-500/30 border border-pink-400/30 transition-all"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </button>
+            )}
+
             <button
               onClick={onOpenSearch}
               className="p-2.5 rounded-xl bg-white/5 hover:bg-pink-500/20 text-pink-200/80 hover:text-white border border-white/10 hover:border-pink-500/30 hover:shadow-[0_0_15px_rgba(236,72,153,0.25)] transition-all shadow-sm"
@@ -101,6 +120,24 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
       {/* Mobile / Compact Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#070b19]/95 backdrop-blur-2xl border-b border-pink-500/20 px-4 pt-3 pb-6 space-y-2 animate-fadeIn">
+          {user ? (
+            <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-pink-500/20 border border-pink-500/30 text-white text-sm font-bold">
+              <span>Signed in as {user.name}</span>
+              <button onClick={onSignOut} className="text-rose-300 underline">Sign Out</button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                onOpenAuth();
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3.5 rounded-2xl text-sm font-extrabold bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-lg"
+            >
+              <User className="w-4 h-4" />
+              <span>Sign In / Cloud Sync</span>
+            </button>
+          )}
+
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = activeTab === item.id;
