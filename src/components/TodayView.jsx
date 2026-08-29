@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   CheckCircle2, Circle, Zap, ChevronLeft, ChevronRight, FileText, Clock, 
   Sparkles, CloudRain, Sun, Cloud, Moon, MapPin, Wind, Droplets, Sunrise, 
@@ -108,52 +108,54 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
     fetchLiveLocationAndWeather();
   }, []);
 
-  // 3. Immersive Liquid Glass Dreamland Atmosphere
+  // 3. Interactive Mouse Movement & Color-Changing Aura for Hero Card
+  const heroRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x, y });
+  };
+
+  // 4. Immersive Liquid Glass Dreamland Atmosphere
   let environmentName = 'Starlight Dream';
   let greeting = '';
   let motivationMsg = '';
   let WeatherIcon = Moon;
-  let heroGradient = 'from-[#12071f]/95 via-[#1f0d3d]/95 to-[#0d0922]/95';
-  let accentGlow = 'bg-pink-500/20';
+  let heroGradient = 'from-[#140826]/95 via-[#230f3d]/95 to-[#0f0924]/95';
 
   if (hours >= 0 && hours < 5) {
     environmentName = 'Brahmamuhurtha Dream';
     greeting = 'Good morning. The world is quiet. This is your time.';
     motivationMsg = '“At 3 AM, while the universe rests, your dedication builds your destiny, Maahi 💗.”';
     WeatherIcon = Moon;
-    heroGradient = 'from-[#0a0314]/95 via-[#16082b]/95 to-[#0c051a]/95';
-    accentGlow = 'bg-purple-500/25';
   } else if (hours >= 5 && hours < 8) {
     environmentName = 'Magical Dawn';
     greeting = 'Good morning. First light over the garden.';
     motivationMsg = '“The path is clear. The schedule is locked. Execute today’s plan with absolute calm.”';
     WeatherIcon = Sunrise;
-    heroGradient = 'from-[#140824]/95 via-[#24103f]/95 to-[#12082b]/95';
-    accentGlow = 'bg-rose-500/20';
   } else if (hours >= 8 && hours < 17) {
     environmentName = 'Radiant Daylight';
     greeting = hours < 12 ? 'Good morning ☀️' : 'Good afternoon.';
     motivationMsg = '“One lecture at a time. No subject switching. Trust the coaching schedule, Maahi 💗.”';
     WeatherIcon = Sun;
-    heroGradient = 'from-[#100c24]/95 via-[#1c123d]/95 to-[#0f172a]/95';
-    accentGlow = 'bg-pink-500/20';
   } else if (hours >= 17 && hours < 20) {
     environmentName = 'Twilight Dusk';
     greeting = 'Good evening.';
     motivationMsg = '“As twilight settles, review your notes and lock in your practice sets with confidence.”';
     WeatherIcon = Sunset;
-    heroGradient = 'from-[#1f092b]/95 via-[#33114a]/95 to-[#140826]/95';
-    accentGlow = 'bg-pink-500/25';
   } else {
     environmentName = 'Deep Dreamland Cosmos';
     greeting = 'Good night.';
     motivationMsg = '“Today’s work is done. Sleep peacefully knowing you moved closer to GATE 2028, Maahi 💗.”';
     WeatherIcon = Moon;
-    heroGradient = 'from-[#080312]/95 via-[#130724]/95 to-[#0b0417]/95';
-    accentGlow = 'bg-indigo-500/25';
   }
 
-  // 4. Start Date & Day Calculation in IST
+  // 5. Start Date & Day Calculation in IST
   const startDateStr = settings.startDate || '2026-08-30';
   const start = new Date(startDateStr);
   
@@ -171,7 +173,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   const dayData = weekData ? weekData.days.find(d => d.dayNum === selectedDayNum) : null;
   const actualDate = getDateFromDayNum(selectedDayNum, startDateStr);
 
-  // 5. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80%)
+  // 6. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80%)
   const calculateRealStudyStreak = () => {
     let streak = 0;
     const checkDayLimit = Math.min(selectedDayNum, Math.max(1, calculatedDayNum));
@@ -246,7 +248,6 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   }
 
   const completionPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  const isDayFullyComplete = totalTasks > 0 && completedTasks === totalTasks;
 
   // Find "What To Do Now" (first incomplete task)
   let currentTaskObj = null;
@@ -292,14 +293,32 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
         </div>
       )}
 
-      {/* PERFECTED LIQUID GLASS CINEMATIC HERO COMPOSITION */}
-      <div className={`w-full bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-6 sm:p-10 text-white shadow-[0_20px_60px_rgba(18,7,31,0.6)] relative overflow-hidden border border-pink-500/20 backdrop-blur-2xl transition-all duration-1000 z-10 box-border`}>
-        {/* Ambient atmospheric glowing starlight */}
-        <div className={`absolute -right-20 -top-20 w-80 h-80 ${accentGlow} rounded-full blur-[130px] pointer-events-none`} />
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/15 rounded-full blur-[130px] pointer-events-none" />
+      {/* INTERACTIVE MOUSE-FOLLOWING COLOR-CHANGING LIQUID GLASS HERO COMPOSITION */}
+      <div 
+        ref={heroRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`w-full bg-gradient-to-br ${heroGradient} rounded-[2.5rem] p-6 sm:p-10 text-white shadow-[0_20px_60px_rgba(18,7,31,0.7)] relative overflow-hidden border border-pink-500/30 backdrop-blur-3xl transition-all duration-700 z-10 box-border group`}
+      >
+        {/* Dynamic Color-Changing Mouse-Tracking Cursor Glow */}
+        <div 
+          className="absolute w-96 h-96 rounded-full pointer-events-none transition-opacity duration-700 blur-[100px]"
+          style={{
+            background: 'radial-gradient(circle, rgba(236,72,153,0.35) 0%, rgba(168,85,247,0.25) 50%, rgba(59,130,246,0) 100%)',
+            left: `${mousePos.x}%`,
+            top: `${mousePos.y}%`,
+            transform: 'translate(-50%, -50%)',
+            opacity: isHovered ? 1 : 0.4
+          }}
+        />
+
+        {/* Ambient background glows */}
+        <div className="absolute -right-20 -top-20 w-80 h-80 bg-pink-500/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/20 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left Hero: Time, Environment & Greeting */}
+          {/* Left Hero: Time, Environment & Floating Typography Quotation */}
           <div className="lg:col-span-7 space-y-6">
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="bg-white/10 backdrop-blur-xl text-pink-200 text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-pink-500/30 shadow-sm">
@@ -316,9 +335,9 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-baseline space-x-3">
-                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-[0_2px_20px_rgba(236,72,153,0.4)]">
+                <h1 className="text-5xl sm:text-6xl font-black tracking-tighter font-mono text-white drop-shadow-[0_2px_25px_rgba(236,72,153,0.5)]">
                   {timeString}
                 </h1>
                 <span className="text-xs font-black text-pink-300 uppercase tracking-widest bg-white/10 px-2.5 py-1 rounded-lg border border-pink-500/20">
@@ -328,9 +347,17 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
               <p className="text-xl sm:text-2xl font-black text-pink-100 tracking-tight">
                 {greeting}
               </p>
-              <p className="text-pink-200/80 text-sm sm:text-base max-w-xl leading-relaxed font-medium italic">
-                {motivationMsg}
-              </p>
+
+              {/* ✨ Floating Typography Quotation Effect */}
+              <div className="relative p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-pink-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden group/quote transition-all duration-500 hover:border-pink-500/40 hover:shadow-[0_15px_35px_rgba(236,72,153,0.2)]">
+                <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl pointer-events-none group-hover/quote:bg-pink-500/20 transition-all duration-700" />
+                <p className="text-pink-100/90 text-sm sm:text-base leading-relaxed font-semibold italic tracking-wide relative z-10 animate-pulse" style={{ animationDuration: '4s' }}>
+                  {motivationMsg}
+                </p>
+                <div className="absolute top-2 right-3 text-pink-400/20 font-serif text-4xl font-black pointer-events-none">
+                  “
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -360,7 +387,7 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
           </div>
 
           {/* Right Hero: Perfectly Aligned Liquid Glass Weather Card & Core Stats */}
-          <div className="lg:col-span-5 bg-white/5 backdrop-blur-2xl rounded-3xl p-6 border border-pink-500/20 shadow-2xl space-y-4">
+          <div className="lg:col-span-5 bg-white/5 backdrop-blur-3xl rounded-3xl p-6 border border-pink-500/25 shadow-2xl space-y-4">
             <div className="flex justify-between items-center border-b border-pink-500/20 pb-3">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-pink-300">Maahi 💗 Dreamland</p>
