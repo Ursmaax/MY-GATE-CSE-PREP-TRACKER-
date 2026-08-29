@@ -20,26 +20,29 @@ export default function ProgressView({ scheduleData, progress, settings }) {
 
   const overallPct = totalAllTasks > 0 ? Math.round((totalCompletedTasks / totalAllTasks) * 100) : 0;
 
-  // Streak calculation based on completed tasks across past days
+  // Strict study streak calculation
   const today = new Date();
   const start = new Date(settings.startDate);
   const currentDayNum = Math.max(1, Math.min(189, Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1));
 
   let streak = 0;
   for (let d = currentDayNum; d >= 1; d--) {
-    let hasCompleted = false;
+    let dayTotal = 0;
+    let dayCompleted = 0;
     scheduleData.forEach(w => {
       w.days.forEach(day => {
         if (day.dayNum === d) {
           day.subjects.forEach((sub, sIdx) => {
             sub.tasks.forEach(task => {
-              if (progress[`${d}_${sIdx}_${task}`]) hasCompleted = true;
+              dayTotal++;
+              if (progress[`${d}_${sIdx}_${task}`]) dayCompleted++;
             });
           });
         }
       });
     });
-    if (hasCompleted) {
+    const isCompleted = dayTotal > 0 && (dayCompleted / dayTotal) >= 0.8;
+    if (isCompleted) {
       streak++;
     } else if (d === currentDayNum) {
       continue;
@@ -47,7 +50,7 @@ export default function ProgressView({ scheduleData, progress, settings }) {
       break;
     }
   }
-  const calculatedStreak = Math.max(streak, 1);
+  const calculatedStreak = streak;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 space-y-6 animate-fadeIn">
@@ -64,7 +67,7 @@ export default function ProgressView({ scheduleData, progress, settings }) {
         <div className="bg-gradient-to-tr from-amber-500 to-orange-500 text-white px-6 py-4 rounded-2xl shadow-xl shadow-orange-500/25 flex items-center space-x-3.5">
           <Flame className="w-7 h-7 animate-bounce text-amber-200" />
           <div>
-            <p className="text-[10px] uppercase font-black tracking-widest opacity-90">Current Streak</p>
+            <p className="text-[10px] uppercase font-black tracking-widest opacity-90">Study Streak</p>
             <p className="text-2xl font-black">{calculatedStreak} Days</p>
           </div>
         </div>
