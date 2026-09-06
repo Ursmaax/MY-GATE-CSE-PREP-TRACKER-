@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Repeat, Plus, CheckCircle2, Circle, Calendar, Sparkles } from 'lucide-react';
 import { loadRevisions, saveRevisions } from '../utils/storage';
+import { GATE_SUBJECTS } from '../data/subjects';
 
 export default function RevisionView() {
   const [revisions, setRevisions] = useState(() => loadRevisions());
@@ -64,12 +65,9 @@ export default function RevisionView() {
             onChange={(e) => setNewSubject(e.target.value)}
             className="bg-[#120720] border border-pink-500/25 rounded-2xl px-4 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-500 text-white"
           >
-            <option value="Data Structures">Data Structures</option>
-            <option value="Algorithms">Algorithms</option>
-            <option value="Operating Systems">Operating Systems</option>
-            <option value="DBMS">DBMS</option>
-            <option value="Computer Networks">Computer Networks</option>
-            <option value="Discrete Mathematics">Discrete Mathematics</option>
+            {GATE_SUBJECTS.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
           </select>
           <button
             type="submit"

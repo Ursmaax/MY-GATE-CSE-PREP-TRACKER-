@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar, Target, BookOpen, Sparkles } from 'lucide-react';
 import { loadQuizzes, saveQuizzes } from '../utils/storage';
+import { GATE_SUBJECTS } from '../data/subjects';
 
 export default function QuizzesView() {
   const [quizzes, setQuizzes] = useState(() => loadQuizzes());
@@ -132,14 +133,9 @@ export default function QuizzesView() {
             onChange={(e) => setSubject(e.target.value)}
             className="bg-[#120720] border border-pink-500/25 rounded-2xl px-3 py-3.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-pink-500 text-white"
           >
-            <option value="Data Structures">Data Structures</option>
-            <option value="Algorithms">Algorithms</option>
-            <option value="Operating Systems">Operating Systems</option>
-            <option value="DBMS">DBMS</option>
-            <option value="Computer Networks">Computer Networks</option>
-            <option value="Discrete Mathematics">Discrete Mathematics</option>
-            <option value="Digital Logic">Digital Logic</option>
-            <option value="COA">COA</option>
+            {GATE_SUBJECTS.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
           </select>
           <input
             type="text"
