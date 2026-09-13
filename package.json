@@ -9,11 +9,13 @@
     "preview": "vite preview --host 0.0.0.0",
     "verify:schedule": "node scripts/verifySchedule.mjs",
     "smoke:archive": "node scripts/smokeArchive.mjs",
-    "test": "node scripts/verifySchedule.mjs && node scripts/smokeArchive.mjs",
+    "test": "node scripts/verifySchedule.mjs && node scripts/smokeArchive.mjs && node scripts/verifyCloudSync.mjs",
+    "verify:sync": "node scripts/verifyCloudSync.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@netlify/blobs": "^10.7.13",
     "@supabase/supabase-js": "^2.112.4",
     "lucide-react": "^0.424.0",
     "react": "^18.3.1",

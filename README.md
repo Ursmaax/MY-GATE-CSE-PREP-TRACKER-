@@ -47,6 +47,13 @@ Welcome to your personal **GATE 2028 Dreamland Command Center**, custom-crafted 
 - Search across names, subjects, topics, types and dates, filter by record type or subject, and sort by date, score or name.
 - One-click **JSON** and **CSV** export of exactly what is on screen — the CSV is Excel-ready (UTF-8 BOM, CRLF, RFC-4180 escaping).
 
+### ☁️ 8. Cross-Device Cloud Sync
+- Settings → **Cross-Device Cloud Sync** → **Generate** a 12-character key on one device.
+- On the other device enter the same key → **Connect & Sync**.
+- Progress, notes, quizzes, tests and revisions live in **Netlify Blobs** (no account required). Treat the key like a password.
+- Health check proving Blobs work in production: [`/.netlify/functions/sync?action=health`](https://maahigate.netlify.app/.netlify/functions/sync?action=health) returns `{"ok":true,"write":true,"read":true,"delete":true}`.
+- After connecting, hard-refresh (`Ctrl+Shift+R`) on both devices so the new bundle loads.
+
 ---
 
 ## ✅ Quality Checks
@@ -56,7 +63,8 @@ Two headless verification suites ship with the project (no browser needed):
 ```bash
 npm run verify:schedule   # 8,000+ assertions over the 189-day calendar & lecture progression
 npm run smoke:archive     # server-renders the Archive module and checks grouping, filters & export formats
-npm test                  # both of the above
+npm run verify:sync       # Netlify Blobs sync protocol, function + Settings panel
+npm test                  # all of the above
 ```
 
 ---

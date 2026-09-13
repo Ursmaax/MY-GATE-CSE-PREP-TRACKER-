@@ -14,7 +14,8 @@ import FocusMode from './components/FocusMode';
 import SearchModal from './components/SearchModal';
 import AuthModal from './components/AuthModal';
 import { initialScheduleData } from './data/scheduleData';
-import { loadSettings, saveSettings, loadProgress, saveProgress, loadNotes, saveNotes, loadRevisions, loadQuizzes, loadTests } from './utils/storage';
+import { loadSettings, saveSettings, loadProgress, saveProgress, loadNotes, saveNotes } from './utils/storage';
+import { initCloudSync } from './utils/cloudSync';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('today');
@@ -52,6 +53,12 @@ export default function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  useEffect(() => {
+    return initCloudSync({
+      onRemoteApplied: () => window.location.reload()
+    });
+  }, []);
 
   const handleSignOut = () => {
     setUser(null);
