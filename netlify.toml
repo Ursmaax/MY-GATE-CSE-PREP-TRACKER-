@@ -1,0 +1,22 @@
+# Netlify configuration for GATE 2028 Dreamland Command Center
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# The app uses relative asset URLs (vite `base: './'`), so it serves
+# correctly from any path or subdomain with no extra config.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[redirects]]
+  # Single-view app: keep deep links alive.
+  from = "/*"
+  to = "/index.html"
+  status = 200
