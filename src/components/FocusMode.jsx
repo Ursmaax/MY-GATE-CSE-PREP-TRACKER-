@@ -1,16 +1,10 @@
 import React from 'react';
 import { X, CheckCircle2, Circle, Clock, Zap, Play, Sparkles } from 'lucide-react';
-import { getDateFromDayNum, formatDateReadable } from '../utils/dateHelper';
+import { formatDateReadable, getDateFromDayNum, getTodayDayNum } from '../utils/dateHelper';
 
 export default function FocusMode({ scheduleData, settings, progress, setProgress, onClose }) {
-  const istTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
   const startDateStr = settings.startDate || '2026-08-30';
-  const start = new Date(startDateStr);
-  
-  const istDateOnly = new Date(istTime.getFullYear(), istTime.getMonth(), istTime.getDate());
-  const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  const diffTime = istDateOnly - startDateOnly;
-  const currentDayNum = Math.max(1, Math.min(189, Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1));
+  const currentDayNum = getTodayDayNum(startDateStr);
 
   const currentWeekNum = Math.ceil(currentDayNum / 7);
   const weekData = scheduleData.find(w => w.weekNumber === currentWeekNum) || scheduleData[0];

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar, Sparkles } from 'lucide-react';
 import { loadTests, saveTests } from '../utils/storage';
+import { getTodayISODate } from '../utils/dateHelper';
 
 export default function TestsView() {
   const [tests, setTests] = useState(() => loadTests());
@@ -9,7 +10,8 @@ export default function TestsView() {
   const [subject, setSubject] = useState('Full Syllabus / Core');
   const [score, setScore] = useState('');
   const [total, setTotal] = useState('100');
-  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
+  // See QuizzesView: date must come from the tracker's own day, not UTC.
+  const [date, setDate] = useState(() => getTodayISODate());
 
   const addTest = (e) => {
     e.preventDefault();

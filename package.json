@@ -9,7 +9,8 @@
     "preview": "vite preview --host 0.0.0.0",
     "verify:schedule": "node scripts/verifySchedule.mjs",
     "smoke:archive": "node scripts/smokeArchive.mjs",
-    "test": "node scripts/verifySchedule.mjs && node scripts/smokeArchive.mjs && node scripts/verifyCloudSync.mjs",
+    "verify:dates": "node scripts/verifyDates.mjs",
+    "test": "node scripts/verifySchedule.mjs && node scripts/smokeArchive.mjs && node scripts/verifyCloudSync.mjs && node scripts/verifyDates.mjs",
     "verify:sync": "node scripts/verifyCloudSync.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
