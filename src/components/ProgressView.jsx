@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart2, Flame, Award, CheckCircle2, Shield, Target, TrendingUp, BookOpen, Check, Sparkles } from 'lucide-react';
 import { loadQuizzes, loadTests } from '../utils/storage';
+import { calculateStreak, DEFAULT_START_DATE, getTodayDayNum } from '../utils/dateHelper';
 
 export default function ProgressView({ scheduleData, progress, settings }) {
   const quizzes = loadQuizzes();
@@ -24,37 +25,13 @@ export default function ProgressView({ scheduleData, progress, settings }) {
 
   const overallPct = totalAllTasks > 0 ? Math.round((totalCompletedTasks / totalAllTasks) * 100) : 0;
 
-  // Strict study streak calculation
-  const today = new Date();
-  const start = new Date(settings.startDate);
-  const currentDayNum = Math.max(1, Math.min(189, Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1));
-
-  let streak = 0;
-  for (let d = currentDayNum; d >= 1; d--) {
-    let dayTotal = 0;
-    let dayCompleted = 0;
-    scheduleData.forEach(w => {
-      w.days.forEach(day => {
-        if (day.dayNum === d) {
-          day.subjects.forEach((sub, sIdx) => {
-            sub.tasks.forEach(task => {
-              dayTotal++;
-              if (progress[`${d}_${sIdx}_${task}`]) dayCompleted++;
-            });
-          });
-        }
-      });
-    });
-    const isCompleted = dayTotal > 0 && (dayCompleted / dayTotal) >= 0.8;
-    if (isCompleted) {
-      streak++;
-    } else if (d === currentDayNum) {
-      continue;
-    } else {
-      break;
-    }
-  }
-  const calculatedStreak = streak;
+  // Strict study streak calculation.
+  // Previously this view computed "today" itself, from `new Date()` against
+  // `new Date('2026-08-30')` — i.e. local clock vs UTC midnight — so it could
+  // disagree with TodayView about the current day (and render "Day NaN / 189"
+  // if a start date was ever missing). Both now share one definition.
+  const currentDayNum = getTodayDayNum(settings.startDate || DEFAULT_START_DATE);
+  const calculatedStreak = calculateStreak(scheduleData, progress, currentDayNum, currentDayNum);
 
   const avgQuizPct = quizzes.length > 0 ? Math.round(quizzes.reduce((a, q) => a + q.percentage, 0) / quizzes.length) : 0;
   const avgTestPct = tests.length > 0 ? Math.round(tests.reduce((a, t) => a + t.percentage, 0) / tests.length) : 0;

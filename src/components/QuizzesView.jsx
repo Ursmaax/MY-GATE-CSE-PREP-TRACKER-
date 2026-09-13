@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2, Award, TrendingUp, CheckCircle2, Calendar, Target, BookOpen, Sparkles } from 'lucide-react';
 import { loadQuizzes, saveQuizzes } from '../utils/storage';
 import { GATE_SUBJECTS } from '../data/subjects';
+import { getTodayISODate } from '../utils/dateHelper';
 
 export default function QuizzesView() {
   const [quizzes, setQuizzes] = useState(() => loadQuizzes());
@@ -10,7 +11,9 @@ export default function QuizzesView() {
   const [topic, setTopic] = useState('');
   const [score, setScore] = useState('');
   const [total, setTotal] = useState('10');
-  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
+  // toISOString() is UTC: between 00:00 and 05:30 IST it is still "yesterday",
+  // so a session logged in a night study block got stamped on the wrong day.
+  const [date, setDate] = useState(() => getTodayISODate());
 
   const addQuiz = (e) => {
     e.preventDefault();

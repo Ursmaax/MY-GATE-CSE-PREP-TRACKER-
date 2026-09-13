@@ -5,7 +5,7 @@ import {
   Sunset, Flame, Play, Undo2, Lock, Unlock, Calendar, BookOpen, BarChart2, 
   Repeat, Settings, Search, Shield, RefreshCw, Check, ArrowRight, Target, Compass
 } from 'lucide-react';
-import { getDateFromDayNum, formatDateReadable } from '../utils/dateHelper';
+import { calculateStreak, formatDateReadable, getDateFromDayNum, getTodayDayNum } from '../utils/dateHelper';
 
 export default function TodayView({ scheduleData, settings, setSettings, progress, setProgress, notes, setNotes, onStartFocus, setActiveTab }) {
   // 1. India Standard Time (IST) Clock & Real-time calculation
@@ -156,17 +156,14 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   }
 
   // 5. Start Date & Day Calculation in IST
+  // Both the day number and its date now come from the shared helpers, which
+  // parse the start date as a *local* calendar day. Parsing '2026-08-30' with
+  // new Date() reads it as UTC midnight = 05:30 IST, which pushed "today" a day
+  // ahead for anyone studying between midnight and 05:30.
   const startDateStr = settings.startDate || '2026-08-30';
-  const start = new Date(startDateStr);
-  
-  const istDateOnly = new Date(istTime.getFullYear(), istTime.getMonth(), istTime.getDate());
-  const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  const diffTime = istDateOnly - startDateOnly;
-  const calculatedDayNum = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  const calculatedDayNum = getTodayDayNum(startDateStr, istTime);
 
-  const [selectedDayNum, setSelectedDayNum] = useState(() => {
-    return Math.max(1, Math.min(189, calculatedDayNum));
-  });
+  const [selectedDayNum, setSelectedDayNum] = useState(() => calculatedDayNum);
 
   const currentWeekNum = Math.ceil(Math.max(1, selectedDayNum) / 7);
   const weekData = scheduleData.find(w => w.weekNumber === currentWeekNum) || scheduleData[0];
@@ -174,40 +171,14 @@ export default function TodayView({ scheduleData, settings, setSettings, progres
   const actualDate = getDateFromDayNum(selectedDayNum, startDateStr);
 
   // 6. STREAK ENGINE — STRICTLY ONLY INCREASES WHEN SCHEDULED STUDY WORK IS COMPLETED (>=80%)
+  // The per-day scoring loop lives in dateHelper so ProgressView scores a day
+  // identically; `Math.max(..., 1)` keeps the "day 1 in progress" display.
   const calculateRealStudyStreak = () => {
-    let streak = 0;
     const checkDayLimit = Math.min(selectedDayNum, Math.max(1, calculatedDayNum));
-    for (let d = checkDayLimit; d >= 1; d--) {
-      let dayTotalTasks = 0;
-      let dayCompletedTasks = 0;
-      scheduleData.forEach(w => {
-        w.days.forEach(day => {
-          if (day.dayNum === d) {
-            day.subjects.forEach((sub, sIdx) => {
-              sub.tasks.forEach(task => {
-                dayTotalTasks++;
-                if (progress[`${d}_${sIdx}_${task}`]) {
-                  dayCompletedTasks++;
-                }
-              });
-            });
-          }
-        });
-      });
-
-      const isCompleted = dayTotalTasks > 0 && (dayCompletedTasks / dayTotalTasks) >= 0.8;
-      if (isCompleted) {
-        streak++;
-      } else if (d === calculatedDayNum) {
-        continue;
-      } else {
-        break;
-      }
-    }
-    return Math.max(streak, 1);
+    return calculateStreak(scheduleData, progress, checkDayLimit, calculatedDayNum);
   };
 
-  const currentStudyStreak = calculateRealStudyStreak();
+  const currentStudyStreak = Math.max(calculateRealStudyStreak(), 1);
 
   // Task check toggle with undo capability toast/state
   const [lastToggled, setLastToggled] = useState(null);
