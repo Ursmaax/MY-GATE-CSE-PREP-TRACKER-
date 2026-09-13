@@ -7,6 +7,9 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
+    "verify:schedule": "node scripts/verifySchedule.mjs",
+    "smoke:archive": "node scripts/smokeArchive.mjs",
+    "test": "node scripts/verifySchedule.mjs && node scripts/smokeArchive.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

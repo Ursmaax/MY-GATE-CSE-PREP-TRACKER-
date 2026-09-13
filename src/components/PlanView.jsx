@@ -31,7 +31,7 @@ export default function PlanView({ scheduleData, settings, progress, setActiveTa
           >
             {scheduleData.map(w => (
               <option key={w.weekNumber} value={w.weekNumber}>
-                Week {w.weekNumber} ({w.days[0].date} to {w.days[6].date})
+                Week {w.weekNumber} · {w.phaseName} · {w.days[0].date} to {w.days[6].date}
               </option>
             ))}
           </select>
