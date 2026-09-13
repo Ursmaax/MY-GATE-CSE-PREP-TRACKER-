@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Settings, Download, Upload, Calendar, Lock, Shield, Sparkles } from 'lucide-react';
+import { Download, Upload, Calendar, Shield } from 'lucide-react';
 import { exportAllData, importAllData } from '../utils/storage';
+import CloudSyncPanel from './CloudSyncPanel';
 
 export default function SettingsView({ settings, setSettings }) {
   const [startDateInput, setStartDateInput] = useState(settings.startDate);
@@ -38,9 +39,11 @@ export default function SettingsView({ settings, setSettings }) {
         </span>
         <h2 className="text-2xl sm:text-3xl font-black mt-3 tracking-tight text-white">Personalization & Data Safety</h2>
         <p className="text-sm text-pink-200/70 mt-1 font-medium">
-          Configure your preparation parameters and secure your progress with local backups.
+          Configure your preparation parameters, sync across devices, and secure your progress with local backups.
         </p>
       </div>
+
+      <CloudSyncPanel />
 
       {/* Start Date Configuration */}
       <div className="w-full bg-gradient-to-br from-[#180a2c]/90 via-[#120720]/90 to-[#0b0416]/90 backdrop-blur-2xl rounded-[2.2rem] p-6 sm:p-8 border border-pink-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] space-y-4">

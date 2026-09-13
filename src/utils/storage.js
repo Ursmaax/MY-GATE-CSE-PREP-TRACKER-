@@ -25,9 +25,28 @@ export function loadSettings() {
   }
 }
 
-export function saveSettings(settings) {
+const dataListeners = new Set();
+
+export function subscribeDataChanges(fn) {
+  dataListeners.add(fn);
+  return () => dataListeners.delete(fn);
+}
+
+function notifyDataChanged(silent) {
+  if (silent) return;
+  for (const fn of dataListeners) {
+    try {
+      fn();
+    } catch (e) {
+      console.error('Data-change listener failed', e);
+    }
+  }
+}
+
+export function saveSettings(settings, { silent = false } = {}) {
   try {
     localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+    notifyDataChanged(silent);
   } catch (e) {
     console.error('Failed to save settings', e);
   }
@@ -42,9 +61,10 @@ export function loadProgress() {
   }
 }
 
-export function saveProgress(progress) {
+export function saveProgress(progress, { silent = false } = {}) {
   try {
     localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(progress));
+    notifyDataChanged(silent);
   } catch (e) {
     console.error('Failed to save progress', e);
   }
@@ -59,9 +79,10 @@ export function loadNotes() {
   }
 }
 
-export function saveNotes(notes) {
+export function saveNotes(notes, { silent = false } = {}) {
   try {
     localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(notes));
+    notifyDataChanged(silent);
   } catch (e) {
     console.error('Failed to save notes', e);
   }
@@ -76,9 +97,10 @@ export function loadRevisions() {
   }
 }
 
-export function saveRevisions(revisions) {
+export function saveRevisions(revisions, { silent = false } = {}) {
   try {
     localStorage.setItem(STORAGE_KEY_REVISIONS, JSON.stringify(revisions));
+    notifyDataChanged(silent);
   } catch (e) {
     console.error('Failed to save revisions', e);
   }
@@ -93,9 +115,10 @@ export function loadQuizzes() {
   }
 }
 
-export function saveQuizzes(quizzes) {
+export function saveQuizzes(quizzes, { silent = false } = {}) {
   try {
     localStorage.setItem(STORAGE_KEY_QUIZZES, JSON.stringify(quizzes));
+    notifyDataChanged(silent);
   } catch (e) {
     console.error('Failed to save quizzes', e);
   }
@@ -110,9 +133,10 @@ export function loadTests() {
   }
 }
 
-export function saveTests(tests) {
+export function saveTests(tests, { silent = false } = {}) {
   try {
     localStorage.setItem(STORAGE_KEY_TESTS, JSON.stringify(tests));
+    notifyDataChanged(silent);
   } catch (e) {
     console.error('Failed to save tests', e);
   }
@@ -135,6 +159,29 @@ export function exportAllData() {
   a.download = `GATE_2028_Command_Center_Backup_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+export function collectSnapshot() {
+  return {
+    settings: loadSettings(),
+    progress: loadProgress(),
+    notes: loadNotes(),
+    revisions: loadRevisions(),
+    quizzes: loadQuizzes(),
+    tests: loadTests(),
+    updatedAt: new Date().toISOString()
+  };
+}
+
+export function applySnapshot(snapshot, { silent = true } = {}) {
+  if (!snapshot || typeof snapshot !== 'object') return;
+  const opts = { silent };
+  if (snapshot.settings) saveSettings(snapshot.settings, opts);
+  if (snapshot.progress) saveProgress(snapshot.progress, opts);
+  if (snapshot.notes) saveNotes(snapshot.notes, opts);
+  if (snapshot.revisions) saveRevisions(snapshot.revisions, opts);
+  if (snapshot.quizzes) saveQuizzes(snapshot.quizzes, opts);
+  if (snapshot.tests) saveTests(snapshot.tests, opts);
 }
 
 export function importAllData(jsonString, onSuccess, onError) {
