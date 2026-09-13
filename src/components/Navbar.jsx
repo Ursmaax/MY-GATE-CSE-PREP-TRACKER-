@@ -38,7 +38,12 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
                   {user ? user.name : 'Maahi 💗'}
                 </span>
               </div>
-              <p className="text-[9px] text-pink-200/70 font-medium tracking-wide truncate">Dreamland Command</p>
+              <p
+                className="text-[9px] text-pink-200/70 font-medium tracking-wide truncate"
+                title="Build 2026-09-13 · 189-day phase-wise syllabus + Archive vault"
+              >
+                Dreamland Command <span className="text-emerald-300 font-black">· v2 LIVE</span>
+              </p>
             </div>
           </div>
 
