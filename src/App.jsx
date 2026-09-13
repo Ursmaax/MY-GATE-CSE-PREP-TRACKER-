@@ -7,6 +7,7 @@ import SubjectsView from './components/SubjectsView';
 import ProgressView from './components/ProgressView';
 import QuizzesView from './components/QuizzesView';
 import TestsView from './components/TestsView';
+import ArchiveView from './components/ArchiveView';
 import RevisionView from './components/RevisionView';
 import SettingsView from './components/SettingsView';
 import FocusMode from './components/FocusMode';
@@ -120,6 +121,9 @@ export default function App() {
         )}
         {activeTab === 'tests' && (
           <TestsView />
+        )}
+        {activeTab === 'archive' && (
+          <ArchiveView setActiveTab={setActiveTab} />
         )}
         {activeTab === 'revision' && (
           <RevisionView />

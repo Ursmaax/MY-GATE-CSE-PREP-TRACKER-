@@ -17,6 +17,7 @@ export default function SubjectsView({ scheduleData, progress }) {
     'Operating Systems',
     'Database Management Systems',
     'Computer Networks',
+    'Software Engineering',
     'Engineering Mathematics',
     'Fundamentals (Aptitude Package)'
   ];

@@ -1,0 +1,31 @@
+# Netlify configuration for the GATE 2028 Dreamland Command Center.
+#
+# Keeping this in the repo (instead of only in the Netlify UI) means the
+# README's "Deploy to Netlify" button works and every deploy uses the same
+# build settings.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Vite emits content-hashed bundles under /assets, so those can be cached
+# forever. index.html must NOT be, otherwise browsers keep replaying an old
+# app shell that points at bundles which no longer exist — which presents as
+# "the site never updates" even after a successful deploy.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"

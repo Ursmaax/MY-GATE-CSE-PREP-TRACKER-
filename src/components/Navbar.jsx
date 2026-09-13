@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles, Award, FileSpreadsheet, User, LogOut } from 'lucide-react';
+import { Calendar, CheckSquare, BookOpen, BarChart2, Repeat, Settings, Zap, Search, Shield, Menu, X, Sparkles, Award, FileSpreadsheet, Archive, User, LogOut } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggleFocus, darkMode, setDarkMode, user, onOpenAuth, onSignOut }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -12,6 +12,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenSearch, onToggle
     { id: 'progress', label: 'Progress', icon: BarChart2 },
     { id: 'quizzes', label: 'Quizzes', icon: Award },
     { id: 'tests', label: 'Tests', icon: FileSpreadsheet },
+    { id: 'archive', label: 'Archive', icon: Archive },
     { id: 'revision', label: 'Revision', icon: Repeat },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];

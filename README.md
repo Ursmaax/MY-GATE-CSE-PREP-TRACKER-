@@ -37,6 +37,28 @@ Welcome to your personal **GATE 2028 Dreamland Command Center**, custom-crafted 
 ### 📊 5. Advanced Quizzes & Mock Tests Analytics
 - Dedicated tracking modules for self-assessment quizzes and full-length mock tests with accuracy trends, averages, and best scores.
 
+### 🗓️ 6. Full 189-Day Phase-Wise Syllabus
+- All 27 weeks are mapped day-by-day across a **five-phase roadmap**: Foundation (W1–9) → Logic & Programming (W10–14) → Systems (W15–18) → Data & OS (W19–23) → Advanced Theory & Sprint (W24–27).
+- Every single one of the **189 days carries its own unique, progressively advancing lecture range** — no repeated placeholder days. Lecture numbering continues across modules within a subject and picks up exactly where the transcribed Weeks 1–3 leave off (Engineering Mathematics resumes at `Lecture 12A`, Discrete Mathematics at `Lecture 24A`).
+- Saturdays are wired as weekly checkpoints (`Weekly Quiz`, `Phase Test`, `Grand Mock Test`), and dates are generated timezone-safely so the calendar never drifts for IST users.
+
+### 🗄️ 7. Unified Archive Vault
+- A dedicated **Archive** tab merges every saved quiz *and* every saved mock/subject/PYQ test into one list **grouped by date**.
+- Search across names, subjects, topics, types and dates, filter by record type or subject, and sort by date, score or name.
+- One-click **JSON** and **CSV** export of exactly what is on screen — the CSV is Excel-ready (UTF-8 BOM, CRLF, RFC-4180 escaping).
+
+---
+
+## ✅ Quality Checks
+
+Two headless verification suites ship with the project (no browser needed):
+
+```bash
+npm run verify:schedule   # 8,000+ assertions over the 189-day calendar & lecture progression
+npm run smoke:archive     # server-renders the Archive module and checks grouping, filters & export formats
+npm test                  # both of the above
+```
+
 ---
 
 ## 🚀 Quick Start & Installation

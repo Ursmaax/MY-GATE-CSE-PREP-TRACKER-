@@ -1,5 +1,6 @@
 import React from 'react';
-import { BookOpen, CheckCircle2, Clock, ChevronRight, Sparkles, Trophy } from 'lucide-react';
+import { BookOpen, CheckCircle2, Clock, ChevronRight, Sparkles, Trophy, Layers } from 'lucide-react';
+import { SCHEDULE_PHASES } from '../data/scheduleData';
 
 export default function WeeksView({ scheduleData, progress, settings }) {
   return (
@@ -13,6 +14,30 @@ export default function WeeksView({ scheduleData, progress, settings }) {
         <p className="text-sm text-pink-200/70 mt-1 font-medium">
           All 27 weeks of verified coaching syllabus mapped sequentially starting from your preparation start date ({settings.startDate}).
         </p>
+
+        {/* Phase roadmap legend */}
+        <div className="mt-6 space-y-3">
+          <p className="text-[10px] font-black uppercase tracking-widest text-pink-300 flex items-center space-x-1.5">
+            <Layers className="w-3.5 h-3.5" />
+            <span>Five-Phase Syllabus Roadmap</span>
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {SCHEDULE_PHASES.map((phase) => (
+              <div key={phase.id} className="bg-white/5 rounded-2xl p-3.5 border border-pink-500/20 space-y-1.5 hover:border-pink-500/40 transition-colors">
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`text-[10px] font-black uppercase tracking-wider bg-gradient-to-r ${phase.accent} bg-clip-text text-transparent`}>
+                    Phase {phase.id}
+                  </span>
+                  <span className="text-[10px] font-bold text-pink-200/60 shrink-0">
+                    W{phase.fromWeek}–{phase.toWeek}
+                  </span>
+                </div>
+                <p className="text-xs font-black text-white leading-tight">{phase.shortName}</p>
+                <p className="text-[10px] text-pink-200/55 font-medium leading-snug">{phase.focus}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Enlarged Immersive Week Cards Grid */}
@@ -58,6 +83,9 @@ export default function WeeksView({ scheduleData, progress, settings }) {
                   <h3 className="font-black text-xl sm:text-2xl text-white tracking-tight mt-2">
                     {week.title}
                   </h3>
+                  <span className="inline-flex items-center mt-2 text-[10px] font-black uppercase tracking-wider text-pink-200 bg-white/5 px-3 py-1 rounded-xl border border-pink-500/25">
+                    Phase {week.phase} · {week.phaseName}
+                  </span>
                   <p className="text-xs sm:text-sm text-pink-200/70 mt-1 font-semibold flex items-center space-x-2">
                     <BookOpen className="w-4 h-4 text-pink-400" />
                     <span>{week.days[0].date} — {week.days[6].date}</span>
